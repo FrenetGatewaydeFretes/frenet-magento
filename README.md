@@ -1,1 +1,1 @@
-# frenet-magento
+# Frenet Magento
