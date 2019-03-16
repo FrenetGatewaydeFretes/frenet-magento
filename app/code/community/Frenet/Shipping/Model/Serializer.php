@@ -11,7 +11,7 @@ class Frenet_Shipping_Model_Serializer implements Frenet_Shipping_Model_Serializ
      */
     public function serialize(array $data)
     {
-        // TODO: Implement serialize() method.
+        return json_encode($data);
     }
 
     /**
@@ -20,6 +20,6 @@ class Frenet_Shipping_Model_Serializer implements Frenet_Shipping_Model_Serializ
      */
     public function unserialize($string)
     {
-        // TODO: Implement unserialize() method.
+        return json_decode($string);
     }
 }
