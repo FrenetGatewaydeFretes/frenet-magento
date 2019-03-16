@@ -42,6 +42,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     /**
      * @param Mage_Shipping_Model_Rate_Request $request
      * @return bool|Mage_Shipping_Model_Rate_Result|null
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
@@ -65,6 +66,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      * Checks if shipping method is correctly configured
      *
      * @return bool
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function canCollectRates()
     {
@@ -74,7 +76,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         }
 
         /** @var int $store */
-        $store = $this->getStore();
+        $store = Mage::app()->getStore();
 
         /** Validate origin postcode */
         if (!$this->objects()->config()->getOriginPostcode($store)) {
@@ -103,7 +105,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      *
      * @param Mage_Shipping_Model_Rate_Request $request
      *
-     * @return $this|array
+     * @return $this|array|Mage_Shipping_Model_Rate_Result_Error
      */
     public function processAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {

@@ -26,7 +26,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getWeightAttribute()
     {
-        return $this->getCarrierConfig('attributes_mapping/weight_attribute');
+        return $this->getCarrierConfig('attributes_mapping_weight');
     }
 
     /**
@@ -34,7 +34,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getHeightAttribute()
     {
-        return $this->getCarrierConfig('attributes_mapping/height_attribute');
+        return $this->getCarrierConfig('attributes_mapping_height');
     }
 
     /**
@@ -42,7 +42,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getLengthAttribute()
     {
-        return $this->getCarrierConfig('attributes_mapping/length_attribute');
+        return $this->getCarrierConfig('attributes_mapping_length');
     }
 
     /**
@@ -50,7 +50,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getWidthAttribute()
     {
-        return $this->getCarrierConfig('attributes_mapping/width_attribute');
+        return $this->getCarrierConfig('attributes_mapping_width');
     }
 
     /**
@@ -58,7 +58,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getDefaultWeight()
     {
-        return (float) $this->getCarrierConfig('default_measurements/default_weight');
+        return (float) $this->getCarrierConfig('default_measurements_default_weight');
     }
 
     /**
@@ -66,7 +66,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getDefaultHeight()
     {
-        return (float) $this->getCarrierConfig('default_measurements/default_height');
+        return (float) $this->getCarrierConfig('default_measurements_default_height');
     }
 
     /**
@@ -74,7 +74,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getDefaultLength()
     {
-        return (float) $this->getCarrierConfig('default_measurements/default_length');
+        return (float) $this->getCarrierConfig('default_measurements_default_length');
     }
 
     /**
@@ -82,7 +82,7 @@ class Frenet_Shipping_Model_Config
      */
     public function getDefaultWidth()
     {
-        return (float) $this->getCarrierConfig('default_measurements/default_width');
+        return (float) $this->getCarrierConfig('default_measurements_default_width');
     }
 
     /**

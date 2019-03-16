@@ -35,4 +35,53 @@
             </types>
         </cache>
     </global>
+    <default>
+        <carriers>
+            <frenetshipping>
+                <model>Frenet_Shipping_Model_Carrier_Frenet</model>
+                <name>frenet</name>
+                <active>0</active>
+                <title>Frenet Shipping Gateway</title>
+                <token/>
+                <use_default>1</use_default>
+                <default_height>2</default_height>
+                <default_length>16</default_length>
+                <default_width>11</default_width>
+                <default_weight>0.1</default_weight>
+                <weight_type>kg</weight_type>
+                <show_delivery>1</show_delivery>
+                <msgprazo>%s - Em média %d dia(s)</msgprazo>
+                <add_delivery_days>0</add_delivery_days>
+                <showmethod>0</showmethod>
+                <specificcountry>BR</specificcountry>
+                <sort_order>10</sort_order>
+                <specificerrmsg>Frenet shipping method is not available.</specificerrmsg>
+                <sallowspecific>0</sallowspecific>
+                <show_shipping_forecast>1</show_shipping_forecast>
+                <shipping_forecast_message>{{d}} dia(s)</shipping_forecast_message>
+
+                <!-- ATTRIBUTES MAPPING -->
+                <attributes_mapping_weight>weight</attributes_mapping_weight>
+                <attributes_mapping_height>volume_height</attributes_mapping_height>
+                <attributes_mapping_length>volume_length</attributes_mapping_length>
+                <attributes_mapping_width>volume_width</attributes_mapping_width>
+
+                <!-- ADDITIONAL LEAD TIME -->
+                <additional_lead_time>0</additional_lead_time>
+
+                <!-- DEFAULT MEASUREMENTS -->
+                <default_measurements_default_weight>1</default_measurements_default_weight>
+                <default_measurements_default_height>2</default_measurements_default_height>
+                <default_measurements_default_length>16</default_measurements_default_length>
+                <default_measurements_default_width>11</default_measurements_default_width>
+
+                <!-- DEBUG -->
+                <debug>0</debug>
+                <debug_filename>frenet_request_debug.log</debug_filename>
+
+                <!-- OTHER OPTIONS -->
+                <sort_order>90</sort_order>
+            </frenetshipping>
+        </carriers>
+    </default>
 </config>
