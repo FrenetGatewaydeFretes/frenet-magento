@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Frenet_Shipping>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Frenet_Shipping>
+    </modules>
+</config>
