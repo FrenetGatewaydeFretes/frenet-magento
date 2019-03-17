@@ -15,6 +15,14 @@
                 <class>Frenet_Shipping_Model_Resource</class>
             </frenet_shipping_resource>
         </models>
+        <resources>
+            <frenet_shipping_setup>
+                <setup>
+                    <module>Frenet_Shipping</module>
+                    <class>Frenet_Shipping_Model_Resource_Setup</class>
+                </setup>
+            </frenet_shipping_setup>
+        </resources>
         <blocks>
             <frenet_shipping>
                 <class>Frenet_Shipping_Block</class>
@@ -44,10 +52,6 @@
                 <title>Frenet Shipping Gateway</title>
                 <token/>
                 <use_default>1</use_default>
-                <default_height>2</default_height>
-                <default_length>16</default_length>
-                <default_width>11</default_width>
-                <default_weight>0.1</default_weight>
                 <weight_type>kg</weight_type>
                 <show_delivery>1</show_delivery>
                 <msgprazo>%s - Em média %d dia(s)</msgprazo>
@@ -57,7 +61,7 @@
                 <sort_order>10</sort_order>
                 <specificerrmsg>Frenet shipping method is not available.</specificerrmsg>
                 <sallowspecific>0</sallowspecific>
-                <show_shipping_forecast>1</show_shipping_forecast>
+                <show_shipping_forecast>0</show_shipping_forecast>
                 <shipping_forecast_message>{{d}} dia(s)</shipping_forecast_message>
 
                 <!-- ATTRIBUTES MAPPING -->
