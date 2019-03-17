@@ -1,0 +1,15 @@
+{
+    "name": "tiagosampaio/frenet-magento",
+    "type": "project",
+    "require": {
+        "frenet/frenet-php": "^0.1.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tiago Sampaio",
+            "email": "tiago@tiagosampaio.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
