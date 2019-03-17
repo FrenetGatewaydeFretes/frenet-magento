@@ -3,7 +3,7 @@
 /**
  * Class Frenet_Shipping_Helper_Data
  */
-class Frenet_Shipping_Helper_Data
+class Frenet_Shipping_Helper_Data extends Mage_Core_Helper_Abstract
 {
     /**
      * @param string $postcode

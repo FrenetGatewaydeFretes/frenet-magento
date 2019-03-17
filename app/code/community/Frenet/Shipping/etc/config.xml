@@ -43,6 +43,28 @@
             </types>
         </cache>
     </global>
+    <frontend>
+        <translate>
+            <modules>
+                <frenet_shipping>
+                    <files>
+                        <default>Frenet/Shipping.csv</default>
+                    </files>
+                </frenet_shipping>
+            </modules>
+        </translate>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <frenet_shipping>
+                    <files>
+                        <default>Frenet/Shipping.csv</default>
+                    </files>
+                </frenet_shipping>
+            </modules>
+        </translate>
+    </adminhtml>
     <default>
         <carriers>
             <frenetshipping>
