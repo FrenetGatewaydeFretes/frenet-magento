@@ -63,7 +63,7 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
         }
 
         $shippingDescription = $track->getShipment()->getOrder()->getShippingDescription();
-        $parts = explode(\Frenet\Shipping\Model\Carrier\Frenet::STR_SEPARATOR, $shippingDescription);
+        $parts = explode(Frenet_Shipping_Model_Carrier_Frenet::STR_SEPARATOR, $shippingDescription);
 
         /**
          * Reversing the array makes it more performatic because it begins searching by the last piece.

@@ -1,0 +1,55 @@
+{
+  "name": "tiagosampaio/event-observer",
+  "description": "Event observers.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tiago Sampaio",
+      "email": "tiago@tiagosampaio.com"
+    }
+  ],
+  "require": {
+    "php": "^5.6",
+    "tiagosampaio/data-object": "^0.1"
+  },
+  "require-dev": {
+    "codacy/coverage": "dev-master",
+    "phpunit/phpunit": "^5.7",
+    "squizlabs/php_codesniffer": "^3.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "TiagoSampaio\\EventObserver\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TiagoSampaioTest\\EventObserver\\": "dev/test/unit/TiagoSampaio"
+    }
+  },
+  "minimum-stability": "stable",
+  "scripts": {
+    "make-dirs": [
+      "mkdir -p temp/coverage/html",
+      "mkdir -p temp/coverage/xml"
+    ],
+    "phpunit": [
+      "vendor/bin/phpunit -c dev/test/unit/phpunit.xml.dist dev/test/unit/"
+    ],
+    "coverage": [
+      "@make-dirs",
+      "vendor/bin/phpunit -c dev/test/unit/phpunit.xml.dist dev/test/unit/ --coverage-html temp/coverage/html --coverage-clover temp/coverage/xml/codacy.xml"
+    ],
+    "phpcs": [
+      "vendor/bin/phpcs --standard=PSR2 --severity=1 src"
+    ],
+    "tests": [
+      "@phpunit",
+      "@phpcs"
+    ],
+    "post-autoload-dump": [
+      "@tests"
+    ]
+  }
+}

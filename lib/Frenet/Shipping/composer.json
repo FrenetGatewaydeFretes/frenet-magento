@@ -1,0 +1,22 @@
+{
+    "name": "tiagosampaio/frenet-magento",
+    "type": "project",
+    "require": {
+        "frenet/frenet-php": "^1.0.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tiago Sampaio",
+            "email": "tiago@tiagosampaio.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "repositories": {
+        "frenet/frenet-php": {
+            "type": "path",
+            "url": "/Users/tiagosampaio/web/opensource/frenet/frenet-php"
+        }
+    }
+}
+

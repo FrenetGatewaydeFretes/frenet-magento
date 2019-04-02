@@ -1,5 +1,7 @@
 <?php
 
+Frenet_Shipping_Model_DependencyFinder::includeDependency();
+
 /**
  * Class Frenet_Shipping_Model_Service_Api
  */

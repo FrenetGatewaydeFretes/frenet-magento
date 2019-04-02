@@ -110,7 +110,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     public function processAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {
         /** Validate request items data */
-        if (empty($request->getAllItems($request))) {
+        if (empty($request->getAllItems())) {
             $this->errors[] = Mage::helper('frenet_shipping')->__('There is no items in this order');
         }
 
@@ -155,7 +155,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      * @param array|string $trackingNumbers
      * @return Mage_Shipping_Model_Tracking_Result|null
      */
-    public function getTracking($trackingNumbers)
+    public function getTrackingInfo($trackingNumbers)
     {
         if (!is_array($trackingNumbers)) {
             $trackingNumbers = [$trackingNumbers];
@@ -163,7 +163,20 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
 
         $this->prepareTrackingResult($trackingNumbers);
 
+        /** @var Mage_Shipping_Model_Tracking_Result_Status $tracking */
+        foreach ($this->trackingResult->getAllTrackings() as $tracking) {
+            return $tracking;
+        }
+
         return $this->trackingResult;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTrackingAvailable()
+    {
+        return true;
     }
 
     /**

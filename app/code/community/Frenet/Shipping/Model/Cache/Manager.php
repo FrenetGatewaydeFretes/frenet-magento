@@ -64,7 +64,7 @@ class Frenet_Shipping_Model_Cache_Manager
 
         /** @var array $service */
         foreach ($services as $service) {
-            $newData[] = ($this->createServiceInstance())->setData($service);
+            $newData[] = $this->createServiceInstance()->setData($service);
         }
 
         return $newData;
