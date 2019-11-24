@@ -46,6 +46,14 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Quote_Multi_Quote_Validator
+     */
+    public function quoteMultiQuoteValidator()
+    {
+        return $this->getInstance('frenet_shipping/quote_multi_quote_validator');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_Quote_Item_Validator
      */
     public function quoteItemValidator()
@@ -62,6 +70,14 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Quote_Item_Price_Calculator
+     */
+    public function quoteItemPriceCalculator()
+    {
+        return $this->getInstance('frenet_shipping/quote_item_price_calculator');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_Catalog_Product_Attributes_Mapping
      */
     public function productAttributesMapping()
@@ -72,7 +88,15 @@ class Frenet_Shipping_Helper_Objects
     /**
      * @return Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      */
-    public function productDimensionsExtrator()
+    public function productDimensionsExtractor()
+    {
+        return $this->getInstance('frenet_shipping/catalog_product_dimensions_extractor');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Catalog_Product_Category_Extractor
+     */
+    public function productCategoryExtractor()
     {
         return $this->getInstance('frenet_shipping/catalog_product_dimensions_extractor');
     }
@@ -107,6 +131,54 @@ class Frenet_Shipping_Helper_Objects
     public function serviceFinder()
     {
         return $this->getInstance('frenet_shipping/service_finder');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package
+     */
+    public function package()
+    {
+        return $this->getInstance('frenet_shipping/packages_package');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Manager
+     */
+    public function packageManager()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_manager');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Calculator
+     */
+    public function packageCalculator()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_calculator');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Matching
+     */
+    public function packageMatching()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_matching');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Limit
+     */
+    public function packageLimit()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_limit');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Item
+     */
+    public function packageItem()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_item');
     }
 
     /**

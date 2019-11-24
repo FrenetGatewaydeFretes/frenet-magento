@@ -29,3 +29,4 @@
 "Show Method if Not Applicable","Mostrar Método Mesmo Se Não Aplicável"
 "Debug Filename","Nome do Arquivo de Log"
 "Sort Order","Ordenação"
+"When the cart's total weight is greater than the limit (30kg) multiple calls will be done for Correios.<br/><br/><b>Note</b>: with this feature enabled you'll need to ship the products in diferent packages.<br/><br/><b style='color:red;'>Warning</b>: The shipping rules and restrictions based in cart total or weight may not work properly when this option is enabled.","Quando o peso total do carrinho for maior do que o limite (30kg), múltiplas cotações serão feitas para o método dos Correios apenas.<br/><br/><b>Nota</b>: com essa funcionalidade habilitada você precisará enviar os produtos em pacotes diferentes.<br/><br/><b style='color:red;'>Warning</b>: As regras e restrições de frete baseada em valor de carrinho ou peso pode não funcionar corretamente ao habilitar essa funcionalidade."

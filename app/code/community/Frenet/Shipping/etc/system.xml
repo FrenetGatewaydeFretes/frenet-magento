@@ -59,6 +59,18 @@
                             </depends>
                         </shipping_forecast_message>
 
+                        <!-- MULTI QUOTE ENABLED -->
+                        <multi_quote translate="label">
+                            <label>Enable Multi Quote</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>70</sort_order>
+                            <comment><![CDATA[When the cart's total weight is greater than the limit (30kg) multiple calls will be done for Correios.<br/><br/><b>Note</b>: with this feature enabled you'll need to ship the products in diferent packages.<br/><br/><b style='color:red;'>Warning</b>: The shipping rules and restrictions based in cart total or weight may not work properly when this option is enabled.]]></comment>
+                        </multi_quote>
+
                         <!-- ATTRIBUTES MAPPING -->
                         <attributes_mapping_weight translate="label">
                             <label>Weight Attribute</label>

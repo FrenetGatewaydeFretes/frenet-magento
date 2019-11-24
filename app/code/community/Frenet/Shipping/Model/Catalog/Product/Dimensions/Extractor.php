@@ -11,6 +11,11 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
     private $product;
 
     /**
+     * @var Mage_Sales_Model_Quote_Item
+     */
+    private $cartItem;
+
+    /**
      * {@inheritdoc}
      */
     public function setProduct(Mage_Catalog_Model_Product $product)
@@ -19,6 +24,18 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
             $this->product = $product;
         }
 
+        return $this;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote_Item $cartItem
+     *
+     * @return $this
+     */
+    public function setProductByCartItem(Mage_Sales_Model_Quote_Item $cartItem)
+    {
+        $this->cartItem = $cartItem;
+        $this->setProduct($this->cartItem->getProduct());
         return $this;
     }
 

@@ -8,121 +8,131 @@ class Frenet_Shipping_Model_Config
     /**
      * @return bool
      */
-    public function isActive()
+    public function isActive($store = null)
     {
-        return (bool) $this->getCarrierConfig('active');
+        return (bool) $this->getCarrierConfig('active', $store);
     }
 
     /**
      * @return string
      */
-    public function getToken()
+    public function getToken($store = null)
     {
-        return $this->getCarrierConfig('token');
+        return $this->getCarrierConfig('token', $store);
     }
 
     /**
      * @return string
      */
-    public function getWeightAttribute()
+    public function getWeightAttribute($store = null)
     {
-        return $this->getCarrierConfig('attributes_mapping_weight');
+        return $this->getCarrierConfig('attributes_mapping_weight', $store);
     }
 
     /**
      * @return string
      */
-    public function getHeightAttribute()
+    public function getHeightAttribute($store = null)
     {
-        return $this->getCarrierConfig('attributes_mapping_height');
+        return $this->getCarrierConfig('attributes_mapping_height', $store);
     }
 
     /**
      * @return string
      */
-    public function getLengthAttribute()
+    public function getLengthAttribute($store = null)
     {
-        return $this->getCarrierConfig('attributes_mapping_length');
+        return $this->getCarrierConfig('attributes_mapping_length', $store);
     }
 
     /**
      * @return string
      */
-    public function getWidthAttribute()
+    public function getWidthAttribute($store = null)
     {
-        return $this->getCarrierConfig('attributes_mapping_width');
+        return $this->getCarrierConfig('attributes_mapping_width', $store);
     }
 
     /**
      * @return float
      */
-    public function getDefaultWeight()
+    public function getDefaultWeight($store = null)
     {
-        return (float) $this->getCarrierConfig('default_measurements_default_weight');
+        return (float) $this->getCarrierConfig('default_measurements_default_weight', $store);
     }
 
     /**
      * @return float
      */
-    public function getDefaultHeight()
+    public function getDefaultHeight($store = null)
     {
-        return (float) $this->getCarrierConfig('default_measurements_default_height');
+        return (float) $this->getCarrierConfig('default_measurements_default_height', $store);
     }
 
     /**
      * @return float
      */
-    public function getDefaultLength()
+    public function getDefaultLength($store = null)
     {
-        return (float) $this->getCarrierConfig('default_measurements_default_length');
+        return (float) $this->getCarrierConfig('default_measurements_default_length', $store);
     }
 
     /**
      * @return float
      */
-    public function getDefaultWidth()
+    public function getDefaultWidth($store = null)
     {
-        return (float) $this->getCarrierConfig('default_measurements_default_width');
+        return (float) $this->getCarrierConfig('default_measurements_default_width', $store);
     }
 
     /**
      * @return int
      */
-    public function getAdditionalLeadTime()
+    public function getAdditionalLeadTime($store = null)
     {
-        return (int) $this->getCarrierConfig('additional_lead_time');
+        return (int) $this->getCarrierConfig('additional_lead_time', $store);
     }
 
     /**
      * @return bool
      */
-    public function canShowShippingForecast()
+    public function canShowShippingForecast($store = null)
     {
-        return (bool) $this->getCarrierConfig('show_shipping_forecast');
+        return (bool) $this->getCarrierConfig('show_shipping_forecast', $store);
     }
 
     /**
      * @return bool
      */
-    public function getShippingForecast()
+    public function getShippingForecast($store = null)
     {
-        return (string) $this->getCarrierConfig('shipping_forecast_message');
+        return (string) $this->getCarrierConfig('shipping_forecast_message', $store);
+    }
+
+    /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
+     * @return bool
+     */
+    public function isMultiQuoteEnabled($store = null)
+    {
+        return (bool) $this->getCarrierConfig('multi_quote', $store);
     }
 
     /**
      * @return bool
      */
-    public function isDebugModeEnabled()
+    public function isDebugModeEnabled($store = null)
     {
-        return (bool) $this->getCarrierConfig('debug');
+        return (bool) $this->getCarrierConfig('debug', $store);
     }
 
     /**
      * @return string
      */
-    public function getDebugFilename()
+    public function getDebugFilename($store = null)
     {
-        return (string) $this->getCarrierConfig('debug_filename');
+        return (string) $this->getCarrierConfig('debug_filename', $store);
     }
 
     /**

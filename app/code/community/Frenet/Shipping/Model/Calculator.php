@@ -22,7 +22,7 @@ class Frenet_Shipping_Model_Calculator implements Frenet_Shipping_Model_Calculat
             ->setRecipientCountry($request->getCountryId())
             ->setShipmentInvoiceValue($request->getPackageValue());
 
-        /** @var \Magento\Quote\Model\Quote\Item $item */
+        /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ((array) $request->getAllItems() as $item) {
             if (!$this->objects()->quoteItemValidator()->validate($item)) {
                 continue;
@@ -50,10 +50,10 @@ class Frenet_Shipping_Model_Calculator implements Frenet_Shipping_Model_Calculat
      */
     private function addItemToQuote(\Frenet\Command\Shipping\QuoteInterface $quote, Mage_Sales_Model_Quote_Item $item)
     {
-        $this->objects()->productDimensionsExtrator()->setProduct($this->getProduct($item));
+        $this->objects()->productDimensionsExtractor()->setProduct($this->getProduct($item));
 
         /** @var Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor $dimensionsExtractor */
-        $dimensionsExtractor = $this->objects()->productDimensionsExtrator();
+        $dimensionsExtractor = $this->objects()->productDimensionsExtractor();
 
         $quote->addShippingItem(
             $item->getSku(),
