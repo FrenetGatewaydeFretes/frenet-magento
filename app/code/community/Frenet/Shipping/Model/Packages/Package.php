@@ -1,10 +1,8 @@
 <?php
 
-/**
- * Class Frenet_Shipping_Model_Packages_Package
- *
- * @package Frenet\Shipping\Model\Packages
- */
+use Mage_Sales_Model_Quote_Item as Item;
+use Frenet_Shipping_Model_Packages_Package_Item as PackageItem;
+
 class Frenet_Shipping_Model_Packages_Package
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
@@ -15,19 +13,41 @@ class Frenet_Shipping_Model_Packages_Package
     private $items = [];
 
     /**
+     * @var Frenet_Shipping_Model_Packages_Package_Limit
+     */
+    private $packageLimit;
+
+    /**
+     * @var Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface
+     */
+    private $dimensionsExtractor;
+
+    /**
+     * @var Frenet_Shipping_Model_Packages_Package_Item_Factory
+     */
+    private $packageItemFactory;
+
+    public function __construct()
+    {
+        $this->dimensionsExtractor = $this->objects()->productDimensionsExtractor();
+        $this->packageItemFactory = $this->objects()->packageItemFactory();
+        $this->packageLimit = $this->objects()->packageLimit();
+    }
+
+    /**
      * @param Item $item
      * @param int  $qty
      *
      * @return bool
      */
-    public function addItem(Mage_Sales_Model_Quote_Item $item, $qty = 1)
+    public function addItem(Item $item, $qty = 1)
     {
         if (!$this->canAddItem($item, $qty)) {
             return false;
         }
 
-        /** @var Frenet_Shipping_Model_Packages_Package_Item $packageItem */
-        $packageItem = $this->getItemById($item->getId()) ?: $this->objects()->packageItem()->setCartItem($item);
+        /** @var PackageItem $packageItem */
+        $packageItem = $this->getItemById($item->getId()) ?: $this->packageItemFactory->create()->setCartItem($item);
 
         $packageItem->setQty($this->getItemQty($item) + $qty);
 
@@ -37,7 +57,7 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @return Frenet_Shipping_Model_Packages_Package_Item[]
+     * @return PackageItem[]
      */
     public function getItems()
     {
@@ -47,7 +67,7 @@ class Frenet_Shipping_Model_Packages_Package
     /**
      * @param $itemId
      *
-     * @return Frenet_Shipping_Model_Packages_Package_Item|null
+     * @return PackageItem|null
      */
     public function getItemById($itemId)
     {
@@ -55,19 +75,19 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
-     * @param int                         $qty
+     * @param Item $item
+     * @param int  $qty
      *
      * @return bool
      */
-    public function canAddItem(Mage_Sales_Model_Quote_Item $item, $qty = 1)
+    public function canAddItem(Item $item, $qty = 1)
     {
-        $this->objects()->productDimensionsExtractor()->setProductByCartItem($item);
+        $this->dimensionsExtractor->setProductByCartItem($item);
 
-        $weight = $this->objects()->productDimensionsExtractor()->getWeight();
+        $weight = $this->dimensionsExtractor->getWeight();
         $itemWeight = $weight * $qty;
 
-        if (($itemWeight + $this->getTotalWeight()) > $this->objects()->packageLimit()->getMaxWeight()) {
+        if (($itemWeight + $this->getTotalWeight()) > $this->packageLimit->getMaxWeight()) {
             return false;
         }
 
@@ -81,7 +101,7 @@ class Frenet_Shipping_Model_Packages_Package
     {
         $total = 0.0000;
 
-        /** @var Frenet_Shipping_Model_Packages_Package_Item $packageItem */
+        /** @var PackageItem $packageItem */
         foreach ($this->getItems() as $packageItem) {
             $total += $packageItem->getTotalWeight();
         }
@@ -96,7 +116,7 @@ class Frenet_Shipping_Model_Packages_Package
     {
         $total = 0.0000;
 
-        /** @var Frenet_Shipping_Model_Packages_Package_Item $packageItem */
+        /** @var PackageItem $packageItem */
         foreach ($this->getItems() as $packageItem) {
             $total += $packageItem->getTotalPrice();
         }
@@ -105,21 +125,21 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return bool
      */
-    private function itemExists(Mage_Sales_Model_Quote_Item $item)
+    private function itemExists(Item $item)
     {
         return isset($this->items[$item->getId()]);
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return float
      */
-    private function getItemQty(Mage_Sales_Model_Quote_Item $item)
+    private function getItemQty(Item $item)
     {
         if ($this->itemExists($item)) {
             return (float) $this->getItemById($item->getId())->getQty();
