@@ -41,37 +41,37 @@ class Frenet_Shipping_Model_Resource_Setup extends Mage_Core_Model_Resource_Setu
     {
         $attributes = array(
             AttributesMapping::DEFAULT_ATTRIBUTE_LENGTH    => array(
-                'label'       => Mage::helper('frenet_shipping')->__('Length (cm)'),
-                'description' => Mage::helper('frenet_shipping')->__("Product's package length (for shipping calculation, minimum of 16cm)."),
-                'note'        => Mage::helper('frenet_shipping')->__("Product's package length (for shipping calculation, minimum of 16cm)."),
+                'label'       => $this->__('Length (cm)'),
+                'description' => $this->__("Product's package length (for shipping calculation, minimum of 16cm)."),
+                'note'        => $this->__("Product's package length (for shipping calculation, minimum of 16cm)."),
                 'default'     => 16,
                 'type'        => 'int',
             ),
             AttributesMapping::DEFAULT_ATTRIBUTE_HEIGHT    => array(
-                'label'       => Mage::helper('frenet_shipping')->__('Height (cm)'),
-                'description' => Mage::helper('frenet_shipping')->__("Product's package height (for shipping calculation, minimum of 2cm)."),
-                'note'        => Mage::helper('frenet_shipping')->__("Product's package height (for shipping calculation, minimum of 2cm)."),
+                'label'       => $this->__('Height (cm)'),
+                'description' => $this->__("Product's package height (for shipping calculation, minimum of 2cm)."),
+                'note'        => $this->__("Product's package height (for shipping calculation, minimum of 2cm)."),
                 'default'     => 2,
                 'type'        => 'int',
             ),
             AttributesMapping::DEFAULT_ATTRIBUTE_WIDTH     => array(
-                'label'       => Mage::helper('frenet_shipping')->__('Width (cm)'),
-                'description' => Mage::helper('frenet_shipping')->__("Product's package width (for shipping calculation, minimum of 11cm)."),
-                'note'        => Mage::helper('frenet_shipping')->__("Product's package width (for shipping calculation, minimum of 11cm)."),
+                'label'       => $this->__('Width (cm)'),
+                'description' => $this->__("Product's package width (for shipping calculation, minimum of 11cm)."),
+                'note'        => $this->__("Product's package width (for shipping calculation, minimum of 11cm)."),
                 'default'     => 11,
                 'type'        => 'int',
             ),
             AttributesMapping::DEFAULT_ATTRIBUTE_LEAD_TIME => array(
-                'label'       => Mage::helper('frenet_shipping')->__('Lead Time (days)'),
-                'description' => Mage::helper('frenet_shipping')->__("Product's manufacturing time (for shipping calculation)."),
-                'note'        => Mage::helper('frenet_shipping')->__("Product's manufacturing time (for shipping calculation)."),
+                'label'       => $this->__('Lead Time (days)'),
+                'description' => $this->__("Product's manufacturing time (for shipping calculation)."),
+                'note'        => $this->__("Product's manufacturing time (for shipping calculation)."),
                 'default'     => 0,
                 'type'        => 'int',
             ),
             AttributesMapping::DEFAULT_ATTRIBUTE_FRAGILE   => array(
-                'label'       => Mage::helper('frenet_shipping')->__('Is Product Fragile?'),
-                'description' => Mage::helper('frenet_shipping')->__('Whether the product contains any fragile materials (for shipping calculation).'),
-                'note'        => Mage::helper('frenet_shipping')->__('Whether the product contains any fragile materials (for shipping calculation).'),
+                'label'       => $this->__('Is Product Fragile?'),
+                'description' => $this->__('Whether the product contains any fragile materials (for shipping calculation).'),
+                'note'        => $this->__('Whether the product contains any fragile materials (for shipping calculation).'),
                 'default'     => false,
                 'type'        => 'int',
                 'input'       => 'boolean',
@@ -81,5 +81,15 @@ class Frenet_Shipping_Model_Resource_Setup extends Mage_Core_Model_Resource_Setu
         );
 
         return $attributes;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    private function __($text)
+    {
+        return Mage::helper('frenet_shipping')->__($text);
     }
 }
