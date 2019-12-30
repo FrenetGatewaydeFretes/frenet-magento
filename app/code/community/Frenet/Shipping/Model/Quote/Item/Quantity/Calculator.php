@@ -1,5 +1,7 @@
 <?php
 
+use Mage_Sales_Model_Quote_Item as Item;
+
 /**
  * Class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
  */
@@ -7,11 +9,11 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
     implements Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
 {
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return integer
      */
-    public function calculate(Mage_Sales_Model_Quote_Item $item)
+    public function calculate(Item $item)
     {
         $type = $item->getProductType();
 
@@ -43,32 +45,32 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return float|int|mixed
      */
-    private function calculateSimpleProduct(Mage_Sales_Model_Quote_Item $item)
+    private function calculateSimpleProduct(Item $item)
     {
         return $item->getQty();
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return float|int|mixed
      */
-    private function calculateBundleProduct(Mage_Sales_Model_Quote_Item $item)
+    private function calculateBundleProduct(Item $item)
     {
         $bundleQty = (float) $item->getParentItem()->getQty();
         return $item->getQty() * $bundleQty;
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return float|int|mixed
      */
-    private function calculateGroupedProduct(Mage_Sales_Model_Quote_Item $item)
+    private function calculateGroupedProduct(Item $item)
     {
         return $item->getQty();
     }
@@ -76,11 +78,11 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
     /**
      * The right quantity for configurable products are on the parent item.
      *
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param Item $item
      *
      * @return float|int|mixed
      */
-    private function calculateConfigurableProduct(Mage_Sales_Model_Quote_Item $item)
+    private function calculateConfigurableProduct(Item $item)
     {
         $qty = $item->getParentItemId() ? $item->getParentItem()->getQty() : $item->getQty();
         return $qty;
