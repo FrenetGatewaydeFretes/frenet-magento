@@ -1,7 +1,19 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ * @package  Frenet_Shipping
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2019.
+ */
 
-class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
-    implements Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface
+use Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface as ProductExtractorInterface;
+
+class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements ProductExtractorInterface
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
@@ -14,6 +26,28 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      * @var Mage_Sales_Model_Quote_Item
      */
     private $cartItem;
+
+    /**
+     * @var Frenet_Shipping_Model_Factory_Product_Resource
+     */
+    private $productResourceFactory;
+
+    /**
+     * @var Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface
+     */
+    private $attributesMapping;
+
+    /**
+     * @var Frenet_Shipping_Model_Config
+     */
+    private $config;
+
+    public function __construct()
+    {
+        $this->productResourceFactory = $this->objects()->productResourceFactory();
+        $this->attributesMapping = $this->objects()->productAttributesMapping();
+        $this->config = $this->objects()->config();
+    }
 
     /**
      * {@inheritdoc}
@@ -44,10 +78,10 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      */
     public function getWeight()
     {
-        $value = $this->extractData($this->objects()->productAttributesMapping()->getWeightAttributeCode());
+        $value = $this->extractData($this->attributesMapping->getWeightAttributeCode());
 
         if (empty($value)) {
-            $value = $this->objects()->config()->getDefaultWeight();
+            $value = $this->config->getDefaultWeight();
         }
 
         return (float) $value;
@@ -58,10 +92,10 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      */
     public function getHeight()
     {
-        $value = $this->extractData($this->objects()->productAttributesMapping()->getHeightAttributeCode());
+        $value = $this->extractData($this->attributesMapping->getHeightAttributeCode());
 
         if (empty($value)) {
-            $value = $this->objects()->config()->getDefaultHeight();
+            $value = $this->config->getDefaultHeight();
         }
 
         return (float) $value;
@@ -72,10 +106,10 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      */
     public function getWidth()
     {
-        $value = $this->extractData($this->objects()->productAttributesMapping()->getWidthAttributeCode());
+        $value = $this->extractData($this->attributesMapping->getWidthAttributeCode());
 
         if (empty($value)) {
-            $value = $this->objects()->config()->getDefaultWidth();
+            $value = $this->config->getDefaultWidth();
         }
 
         return (float) $value;
@@ -86,10 +120,10 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
      */
     public function getLength()
     {
-        $value = $this->extractData($this->objects()->productAttributesMapping()->getLengthAttributeCode());
+        $value = $this->extractData($this->attributesMapping->getLengthAttributeCode());
 
         if (empty($value)) {
-            $value = $this->objects()->config()->getDefaultLength();
+            $value = $this->config->getDefaultLength();
         }
 
         return (float) $value;
@@ -106,12 +140,15 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
             return null;
         }
 
+        if ($this->cartItem->getData($key)) {
+            return $this->cartItem->getData($key);
+        }
+
         if ($this->product->getData($key)) {
             return $this->product->getData($key);
         }
 
-        /** @var string|mixed $value */
-        $value = $this->product->getResource()->getAttributeRawValue(
+        $value = $this->productResourceFactory->create()->getAttributeRawValue(
             $this->product->getId(),
             $key,
             $this->product->getStore()
