@@ -25,19 +25,68 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     protected $_code = self::CARRIER_CODE;
 
     /**
+     * @var Frenet_Shipping_Model_Store_Management
+     */
+    private $storeManagement;
+
+    /**
+     * @var Frenet_Shipping_Model_Factory_Product_Resource
+     */
+    private $productResourceFactory;
+
+    /**
      * @var array
      */
     private $errors = [];
 
     /**
-     * @var Mage_Shipping_Model_Rate_Result
+     * @var null
      */
-    private $rateResult;
+    private $result;
 
     /**
-     * @var Mage_Shipping_Model_Tracking_Result
+     * @var Frenet_Shipping_Model_CalculatorInterface
      */
-    private $trackingResult;
+    private $calculator;
+
+    /**
+     * @var Frenet_Shipping_Model_Delivery_Time_Calculator
+     */
+    private $deliveryTimeCalculator;
+
+    /**
+     * @var Frenet_Shipping_Model_TrackingInterface
+     */
+    private $trackingService;
+
+    /**
+     * @var Frenet_Shipping_Model_Service_FinderInterface
+     */
+    private $serviceFinder;
+
+    /**
+     * @var Frenet_Shipping_Model_Formatters_Postcode_Normalizer
+     */
+    private $postcodeNormalizer;
+
+    /**
+     * @var Frenet_Shipping_Model_Config
+     */
+    private $config;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->storeManagement = $this->objects()->storeManagement();
+        $this->productResourceFactory = $this->objects()->productResourceFactory();
+        $this->trackingService = $this->objects()->trackingService();
+        $this->calculator = $this->objects()->calculator();
+        $this->serviceFinder = $this->objects()->serviceFinder();
+        $this->config = $this->objects()->config();
+        $this->deliveryTimeCalculator = $this->objects()->deliveryTimeCalculator();
+        $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
+    }
 
     /**
      * @param Mage_Shipping_Model_Rate_Request $request

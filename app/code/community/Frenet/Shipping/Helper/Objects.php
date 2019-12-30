@@ -182,6 +182,38 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Store_Management
+     */
+    public function storeManagement()
+    {
+        return $this->getInstance('frenet_shipping/store_management');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Factory_Product_Resource
+     */
+    public function productResourceFactory()
+    {
+        return $this->getInstance('frenet_shipping/factory_product_resource');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Formatters_Postcode_Normalizer
+     */
+    public function postcodeNormalizer()
+    {
+        return $this->getInstance('frenet_shipping/formatters_postcode_normalizer');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Delivery_Time_Calculator
+     */
+    public function deliveryTimeCalculator()
+    {
+        return $this->getInstance('frenet_shipping/delivery_time_calculator');
+    }
+
+    /**
      * @param string $modelClass
      * @param array  $arguments
      * @param bool   $singleton
