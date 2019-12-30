@@ -6,6 +6,8 @@
 class Frenet_Shipping_Model_Config
 {
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return bool
      */
     public function isActive($store = null)
@@ -14,6 +16,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getToken($store = null)
@@ -22,6 +26,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getWeightAttribute($store = null)
@@ -30,6 +36,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getHeightAttribute($store = null)
@@ -38,6 +46,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getLengthAttribute($store = null)
@@ -46,6 +56,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getWidthAttribute($store = null)
@@ -54,6 +66,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return float
      */
     public function getDefaultWeight($store = null)
@@ -62,6 +76,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return float
      */
     public function getDefaultHeight($store = null)
@@ -70,6 +86,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return float
      */
     public function getDefaultLength($store = null)
@@ -78,6 +96,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return float
      */
     public function getDefaultWidth($store = null)
@@ -86,6 +106,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return int
      */
     public function getAdditionalLeadTime($store = null)
@@ -94,6 +116,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return bool
      */
     public function canShowShippingForecast($store = null)
@@ -102,6 +126,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param string|int|Mage_Core_Model_Store $store
+     *
      * @return bool
      */
     public function getShippingForecastMessage($store = null)
@@ -120,6 +146,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return bool
      */
     public function isDebugModeEnabled($store = null)
@@ -128,6 +156,8 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return string
      */
     public function getDebugFilename($store = null)
@@ -172,10 +202,15 @@ class Frenet_Shipping_Model_Config
 
     /**
      * @param null|string|int|Mage_Core_Model_Store $store
+     *
      * @return Mage_Core_Model_Store
      */
     private function getStore($store = null)
     {
-        return Mage::getStoreConfig($store);
+        try {
+            return Mage::app()->getStore($store);
+        } catch (Exception $exception) {
+            return Mage::app()->getDefaultStoreView();
+        }
     }
 }
