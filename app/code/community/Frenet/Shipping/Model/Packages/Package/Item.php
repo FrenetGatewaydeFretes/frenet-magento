@@ -37,24 +37,34 @@ class Frenet_Shipping_Model_Packages_Package_Item
     private $productResourceFactory;
 
     /**
-     * @var \Frenet\$this->objects()->Shipping()\Api\WeightConverterInterface
+     * @var Frenet_Shipping_Model_Weight_ConverterInterface
      */
     private $weightConverter;
 
     /**
-     * @var \Frenet\Shipping\Model\Catalog\Product\CategoryExtractor
+     * @var Frenet_Shipping_Model_Catalog_Product_Category_Extractor
      */
     private $categoryExtractor;
 
     /**
-     * @var \Frenet\Shipping\Api\Data\DimensionsExtractorInterface
+     * @var Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface
      */
     private $dimensionsExtractor;
 
     /**
-     * @var Frenet\Shipping\Model\Quote\ItemPriceCalculator
+     * @var Frenet_Shipping_Model_Quote_Item_Price_Calculator
      */
     private $itemPriceCalculator;
+
+    public function __construct()
+    {
+        $this->storeManagement = $this->objects()->storeManagement();
+        $this->productResourceFactory = $this->objects()->productResourceFactory();
+        $this->weightConverter = $this->objects()->weightConverter();
+        $this->categoryExtractor = $this->objects()->productCategoryExtractor();
+        $this->dimensionsExtractor = $this->objects()->productDimensionsExtractor();
+        $this->itemPriceCalculator = $this->objects()->quoteItemPriceCalculator();
+    }
 
     /**
      * @return Mage_Sales_Model_Quote_Item
@@ -91,7 +101,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
         $this->initProduct();
 
         /** @todo There will be needed a extractor here. */
-        return (float) $this->objects()->quoteItemPriceCalculator()->getPrice($this->cartItem);
+        return (float) $this->itemPriceCalculator->getPrice($this->cartItem);
     }
 
     /**
@@ -102,7 +112,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
         $this->initProduct();
 
         /** @todo There will be needed a extractor here. */
-        return (float) $this->objects()->quoteItemPriceCalculator()->getFinalPrice($this->cartItem);
+        return (float) $this->itemPriceCalculator->getFinalPrice($this->cartItem);
     }
 
     /**
@@ -156,7 +166,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     public function getWeight()
     {
         $this->initProduct();
-        return $this->objects()->weightConverter()->convertToKg($this->dimensionsExtractor->getWeight());
+        return $this->weightConverter->convertToKg($this->dimensionsExtractor->getWeight());
     }
 
     /**
@@ -174,7 +184,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     public function getLength()
     {
         $this->initProduct();
-        return $this->objects()->productDimensionsExtractor()->getLength();
+        return $this->dimensionsExtractor->getLength();
     }
 
     /**
@@ -183,7 +193,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     public function getHeight()
     {
         $this->initProduct();
-        return $this->objects()->productDimensionsExtractor()->getHeight();
+        return $this->dimensionsExtractor->getHeight();
     }
 
     /**
@@ -192,7 +202,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     public function getWidth()
     {
         $this->initProduct();
-        return $this->objects()->productDimensionsExtractor()->getWidth();
+        return $this->dimensionsExtractor->getWidth();
     }
 
     /**
@@ -201,7 +211,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     public function getProductCategories()
     {
         $this->initProduct();
-        return $this->objects()->productCategoryExtractor()->getProductCategories($this->getProduct(true));
+        return $this->categoryExtractor->getProductCategories($this->getProduct(true));
     }
 
     /**
@@ -218,11 +228,11 @@ class Frenet_Shipping_Model_Packages_Package_Item
 
         try {
             /** @var Mage_Catalog_Model_Resource_Product $resource */
-            $resource = Mage::getResourceModel('catalog/product');
+            $resource = $this->productResourceFactory->create();
             $value = (bool) $resource->getAttributeRawValue(
                 $product->getId(),
                 AttributesMappingInterface::DEFAULT_ATTRIBUTE_FRAGILE,
-                Mage::app()->getStore()
+                $this->storeManagement->getStore()
             );
 
             return (bool) $value;
@@ -237,7 +247,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
      */
     private function initProduct()
     {
-        $this->objects()->productDimensionsExtractor()->setProductByCartItem($this->cartItem);
+        $this->dimensionsExtractor->setProductByCartItem($this->cartItem);
         return $this;
     }
 }
