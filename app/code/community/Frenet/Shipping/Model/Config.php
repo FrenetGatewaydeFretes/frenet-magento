@@ -104,7 +104,7 @@ class Frenet_Shipping_Model_Config
     /**
      * @return bool
      */
-    public function getShippingForecast($store = null)
+    public function getShippingForecastMessage($store = null)
     {
         return (string) $this->getCarrierConfig('shipping_forecast_message', $store);
     }

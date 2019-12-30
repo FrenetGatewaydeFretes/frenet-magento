@@ -1,6 +1,7 @@
 <?php
 
 use Frenet\ObjectType\Entity\Shipping\Quote\ServiceInterface as QuoteServiceInterface;
+use Mage_Shipping_Model_Rate_Request as RateRequest;
 
 /**
  * Class Frenet_Shipping_Model_Carrier_Frenet
@@ -40,7 +41,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     private $errors = [];
 
     /**
-     * @var null
+     * @var Mage_Shipping_Model_Rate_Result
      */
     private $result;
 
@@ -93,47 +94,47 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      * @return bool|Mage_Shipping_Model_Rate_Result|null
      * @throws Mage_Core_Model_Store_Exception
      */
-    public function collectRates(Mage_Shipping_Model_Rate_Request $request)
+    public function collectRates(RateRequest $request)
     {
         if (!$this->canCollectRates()) {
             $errorMessage = $this->getErrorMessage();
-            Mage::log("Frenet canCollectRates: " . $errorMessage);
+            $this->_logger->debug("Frenet canCollectRates: " . $errorMessage);
+
             return $errorMessage;
         }
 
         /** @var array $results */
-        if (!$results = $this->objects()->calculator()->getQuote($request)) {
-            return $this->rateResult;
+        if (!$results = $this->calculator->getQuote($request)) {
+            return $this->result;
         }
 
-        $this->prepareRateResult($results);
+        $this->prepareResult($request, $results);
 
-        return $this->rateResult;
+        return $this->result;
     }
 
     /**
      * Checks if shipping method is correctly configured
      *
      * @return bool
-     * @throws Mage_Core_Model_Store_Exception
      */
     public function canCollectRates()
     {
         /** Validate carrier active flag */
-        if (!$this->objects()->config()->isActive()) {
+        if (!$this->config->isActive()) {
             return false;
         }
 
         /** @var int $store */
-        $store = Mage::app()->getStore();
+        $store = $this->getStore();
 
         /** Validate origin postcode */
-        if (!$this->objects()->config()->getOriginPostcode($store)) {
+        if (!$this->config->getOriginPostcode($store)) {
             return false;
         }
 
         /** Validate frenet token */
-        if (!$this->objects()->config()->getToken()) {
+        if (!$this->config->getToken()) {
             return false;
         }
 
@@ -141,8 +142,11 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     }
 
     /**
+     * Make this module compatible with older versions of Magento 2.
+     *
      * @param Mage_Shipping_Model_Rate_Request $request
-     * @return bool|Frenet_Shipping_Model_Carrier_Frenet|Mage_Shipping_Model_Carrier_Abstract|Mage_Shipping_Model_Rate_Result_Error|\Magento\Framework\DataObject
+     *
+     * @return $this|bool|Mage_Shipping_Model_Carrier_Abstract|Mage_Shipping_Model_Rate_Result_Error
      */
     public function proccessAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {
@@ -154,7 +158,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      *
      * @param Mage_Shipping_Model_Rate_Request $request
      *
-     * @return $this|array|Mage_Shipping_Model_Rate_Result_Error
+     * @return $this|Mage_Shipping_Model_Rate_Result_Error
      */
     public function processAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {
@@ -169,17 +173,17 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         }
 
         /** Validate destination postcode */
-        if (!((int) Mage::helper('frenet_shipping')->normalizePostcode($request->getDestPostcode()))) {
+        if (!((int) $this->postcodeNormalizer->format($request->getDestPostcode()))) {
             $this->errors[] = Mage::helper('frenet_shipping')->__('Please inform a valid postcode');
         }
 
         if (!empty($this->errors)) {
-            /** @var Mage_Shipping_Model_Rate_Result_Error  $error */
-            $error = Mage::getModel('shipping/rate_result_error', array(
+            /** @var Mage_Shipping_Model_Rate_Result_Error $error */
+            $error = $this->_rateErrorFactory->create([
                 'carrier'       => $this->_code,
-                'carrier_title' => $this->objects()->config()->getCarrierConfig('title'),
+                'carrier_title' => $this->config->getCarrierConfig('title'),
                 'error_message' => implode(', ', $this->errors)
-            ));
+            ]);
 
             $this->debugErrors($error);
 
@@ -197,42 +201,31 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      */
     public function getAllowedMethods()
     {
-        return [self::CARRIER_CODE => $this->objects()->config()->getCarrierConfig('name')];
+        return [self::CARRIER_CODE => $this->config->getCarrierConfig('name')];
     }
 
     /**
-     * @param array|string $trackingNumbers
-     * @return Mage_Shipping_Model_Tracking_Result|null
+     * @param $trackingNumbers
+     *
+     * @return Mage_Shipping_Model_Rate_Result
      */
-    public function getTrackingInfo($trackingNumbers)
+    public function getTracking($trackingNumbers)
     {
         if (!is_array($trackingNumbers)) {
             $trackingNumbers = [$trackingNumbers];
         }
 
-        $this->prepareTrackingResult($trackingNumbers);
+        $this->prepareTracking($trackingNumbers);
 
-        /** @var Mage_Shipping_Model_Tracking_Result_Status $tracking */
-        foreach ($this->trackingResult->getAllTrackings() as $tracking) {
-            return $tracking;
-        }
-
-        return $this->trackingResult;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTrackingAvailable()
-    {
-        return true;
+        return $this->result;
     }
 
     /**
      * @param array $trackingNumbers
+     *
      * @return Mage_Shipping_Model_Tracking_Result
      */
-    private function prepareTrackingResult(array $trackingNumbers)
+    private function prepareTracking(array $trackingNumbers)
     {
         /** @var Mage_Shipping_Model_Tracking_Result $result */
         $result = Mage::getModel('shipping/tracking_result');
@@ -240,12 +233,11 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         /** @var string $trackingNumber */
         foreach ($trackingNumbers as $trackingNumber) {
             /** @var \Frenet\ObjectType\Entity\Shipping\Info\ServiceInterface $service */
-            $service = $this->objects()->serviceFinder()->findByTrackingNumber($trackingNumber);
+            $service = $this->serviceFinder->findByTrackingNumber($trackingNumber);
             $serviceCode = $service ? $service->getServiceCode() : null;
 
             /** @var Mage_Shipping_Model_Tracking_Result_Status $status */
-            $status = Mage::getModel('shipping/tracking_result_status');
-
+            $status = $this->_trackStatusFactory->create();
             $status->setCarrier(self::CARRIER_CODE);
             $status->setCarrierTitle($this->getConfigData('title'));
             $status->setTracking($trackingNumber);
@@ -254,7 +246,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
             $result->append($status);
         }
 
-        $this->trackingResult = $result;
+        $this->result = $result;
 
         return $result;
     }
@@ -263,11 +255,13 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      * @param Mage_Shipping_Model_Tracking_Result_Status $status
      * @param string                                     $trackingNumber
      * @param string                                     $shippingServiceCode
+     *
+     * @return void
      */
     private function prepareTrackingInformation($status, $trackingNumber, $shippingServiceCode)
     {
         /** @var \Frenet\ObjectType\Entity\Tracking\TrackingInfoInterface $trackingInfo */
-        $trackingInfo = $this->objects()->trackingService()->track($trackingNumber, $shippingServiceCode);
+        $trackingInfo = $this->trackingService->track($trackingNumber, $shippingServiceCode);
 
         $events = $trackingInfo->getTrackingEvents();
 
@@ -285,63 +279,73 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     }
 
     /**
-     * @param array $items
+     * @param RateRequest             $request
+     * @param QuoteServiceInterface[] $items
      *
      * @return $this
      */
-    private function prepareRateResult(array $items = [])
+    private function prepareResult(RateRequest $request, array $services = [])
     {
         /** @var Mage_Shipping_Model_Rate_Result $result */
-        $this->rateResult = Mage::getModel('shipping/rate_result');
+        $this->result = Mage::getModel('shipping/rate_result');
 
-        /** @var QuoteServiceInterface $item */
-        foreach ($items as $item) {
-            if ($item->isError()) {
+        /** @var QuoteServiceInterface $service */
+        foreach ($services as $service) {
+            if ($service->isError()) {
                 continue;
             }
 
-            $deliveryTime = (int) $item->getDeliveryTime();
-            $additionalLeadTime = (int) $this->objects()->config()->getAdditionalLeadTime();
+            $deliveryTime = $this->deliveryTimeCalculator->calculate($request, $service);
 
-            $item->setData(QuoteServiceInterface::FIELD_DELIVERY_TIME, $deliveryTime + $additionalLeadTime);
-
-            $title = $this->prepareMethodTitle(
-                $item->getCarrier(),
-                $item->getServiceDescription(),
-                $item->getDeliveryTime()
+            $methodTitle = $this->prepareMethodTitle(
+                $service->getCarrier(),
+                $service->getServiceDescription(),
+                $deliveryTime
             );
 
             $method = $this->prepareMethod(
-                $title,
-                $item->getServiceCode(),
-                $item->getServiceDescription(),
-                $item->getShippingPrice(),
-                $item->getShippingPrice()
+                $methodTitle,
+                $service->getServiceCode(),
+                $this->appendInformation($service->getServiceDescription(), $deliveryTime, $service->getMessage()),
+                $service->getShippingPrice(),
+                $service->getShippingPrice()
             );
 
-            $this->rateResult->append($method);
+            $this->result->append($method);
         }
 
         return $this;
     }
 
     /**
+     * @return Mage_Core_Model_Store
+     */
+    private function getStore()
+    {
+        try {
+            return $this->storeManagement->getStore();
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
+    /**
      * @param string $method
      * @param string $code
-     * @param string $title
+     * @param string $methodTitle
      * @param float  $price
      * @param float  $cost
      *
      * @return Mage_Shipping_Model_Rate_Result_Method
      */
-    private function prepareMethod($method, $code, $title, $price, $cost)
+    private function prepareMethod($method, $code, $methodTitle, $price, $cost)
     {
         /** @var Mage_Shipping_Model_Rate_Result_Method $methodInstance */
         $methodInstance = Mage::getModel('shipping/rate_result_method');
         $methodInstance->setCarrier($this->_code)
-            ->setCarrierTitle($this->objects()->config()->getCarrierConfig('title'))
+            ->setCarrierTitle($this->config->getCarrierConfig('title'))
             ->setMethod($method)
-            ->setMethodTitle($title)
+            ->setMethodTitle($methodTitle)
             ->setMethodDescription($code)
             ->setPrice($price)
             ->setCost($cost);
@@ -352,19 +356,50 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     /**
      * @param string $carrier
      * @param string $description
-     * @param int    $leadTime
+     * @param int    $deliveryTime
+     * @param string $message
      *
      * @return string
      */
-    private function prepareMethodTitle($carrier, $description, $leadTime = 0)
+    private function prepareMethodTitle($carrier, $description, $deliveryTime = 0)
     {
         $title = Mage::helper('frenet_shipping')->__('%s' . self::STR_SEPARATOR . '%s', $carrier, $description);
-
-        if ($this->objects()->config()->canShowShippingForecast()) {
-            $message = str_replace('{{d}}', (int) $leadTime, $this->objects()->config()->getShippingForecast());
-            $title .= self::STR_SEPARATOR . $message;
-        }
+        $title = $this->appendInformation($title, $deliveryTime);
 
         return $title;
+    }
+
+    /**
+     * @param string $text
+     * @param int    $deliveryTime
+     * @param string $message
+     *
+     * @return string
+     */
+    private function appendInformation($text, $deliveryTime = 0, $message = null)
+    {
+        if ($this->config->canShowShippingForecast()) {
+            $text .= self::STR_SEPARATOR . $this->getDeliveryTimeMessage($deliveryTime);
+        }
+
+        /**
+         * In some cases the API returns some messages about restrictions or extended delivery time.
+         * This is where this information will be displayed.
+         */
+        if ($message) {
+            $text .= " ({$message})";
+        }
+
+        return $text;
+    }
+
+    /**
+     * @param int $deliveryTime
+     *
+     * @return mixed
+     */
+    private function getDeliveryTimeMessage($deliveryTime = 0)
+    {
+        return str_replace('{{d}}', (int) $deliveryTime, $this->config->getShippingForecastMessage());
     }
 }
