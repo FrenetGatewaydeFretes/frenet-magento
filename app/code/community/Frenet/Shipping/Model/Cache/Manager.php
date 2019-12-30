@@ -1,34 +1,81 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ * @package  Frenet_Shipping
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2019.
+ */
+
+use Magento\Framework\Serialize\SerializerInterface;
+use Mage_Shipping_Model_Rate_Request as RateRequest;
+use Frenet\Shipping\Model\Cache\Type\Frenet as FrenetCacheType;
 
 /**
- * Class Frenet_Shipping_Model_Cache_Manager
+ * Class CacheManager
+ *
+ * @package Frenet\Shipping\Model
  */
 class Frenet_Shipping_Model_Cache_Manager
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * Cache type code unique among all cache types
+     * @var Mage_Core_Model_Cache
      */
-    const TYPE_IDENTIFIER = 'frenet_result';
+    private $cache;
 
     /**
-     * Cache tag used to distinguish the cache type from all other cache
+     * @var Frenet_Shipping_Model_Serializer
      */
-    const CACHE_TAG = 'FRENET_RESULT';
+    private $serializer;
 
     /**
-     * @param Mage_Shipping_Model_Rate_Request $request
+     * @var Frenet_Shipping_Model_Config
+     */
+    private $config;
+
+    /**
+     * @var Frenet_Shipping_Model_Quote_Item_Validator
+     */
+    private $quoteItemValidator;
+
+    /**
+     * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
+     */
+    private $itemQuantityCalculator;
+
+    /**
+     * @var Frenet_Shipping_Model_Formatters_Postcode_Normalizer
+     */
+    private $postcodeNormalizer;
+
+    public function __construct()
+    {
+        $this->serializer = $this->objects()->serializer();
+        $this->cache = Mage::app()->getCacheInstance();
+        $this->config = $this->objects()->config();
+        $this->quoteItemValidator = $this->objects()->quoteItemValidator();
+        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
+    }
+
+    /**
+     * @param RateRequest $request
      *
      * @return bool
      */
-    public function load(Mage_Shipping_Model_Rate_Request $request)
+    public function load(RateRequest $request)
     {
         if (!$this->isCacheEnabled()) {
             return false;
         }
 
-        $data = $this->objects()->cache()->load($this->generateCacheKey($request));
+        $data = $this->cache->load($this->generateCacheKey($request));
 
         if ($data) {
             $data = $this->prepareAfterLoading($data);
@@ -38,17 +85,22 @@ class Frenet_Shipping_Model_Cache_Manager
     }
 
     /**
-     * @param array                            $services
-     * @param Mage_Shipping_Model_Rate_Request $request
+     * @param array       $services
+     * @param RateRequest $request
+     *
      * @return bool
      */
-    public function save(array $services, Mage_Shipping_Model_Rate_Request $request)
+    public function save(array $services, RateRequest $request)
     {
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
+
         $identifier = $this->generateCacheKey($request);
         $lifetime = null;
-        $tags = array(self::CACHE_TAG);
+        $tags = [FrenetCacheType::CACHE_TAG];
 
-        return $this->objects()->cache()->save($this->prepareBeforeSaving($services), $identifier, $tags, $lifetime);
+        return $this->cache->save($this->prepareBeforeSaving($services), $identifier, $tags, $lifetime);
     }
 
     /**
@@ -58,13 +110,12 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private function prepareAfterLoading($data)
     {
-        $newData = array();
-
-        $services = $this->objects()->serializer()->unserialize($data);
+        $newData  = [];
+        $services = $this->serializer->unserialize($data);
 
         /** @var array $service */
         foreach ($services as $service) {
-            $newData[] = $this->createServiceInstance()->setData($service);
+            $newData[] = ($this->createServiceInstance())->setData($service);
         }
 
         return $newData;
@@ -77,25 +128,28 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private function prepareBeforeSaving(array $services)
     {
-        $newData = array();
+        $newData = [];
 
-        /** @var \Frenet\ObjectType\Entity\Shipping\QuoteInterface $services */
+        /** @var \Frenet\ObjectType\Entity\Shipping\QuoteInterface $service */
         foreach ($services as $service) {
             $newData[] = $service->getData();
         }
 
-        return $this->objects()->serializer()->serialize($newData);
+        return $this->serializer->serialize($newData);
     }
 
-    private function generateCacheKey(Mage_Shipping_Model_Rate_Request $request)
+    /**
+     * @return string
+     */
+    private function generateCacheKey(RateRequest $request)
     {
         $destPostcode = $request->getDestPostcode();
-        $origPostcode = $this->objects()->config()->getOriginPostcode();
-        $items = array();
+        $origPostcode = $this->config->getOriginPostcode();
+        $items = [];
 
         /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ($request->getAllItems() as $item) {
-            if (!$this->objects()->quoteItemValidator()->validate($item)) {
+            if (!$this->quoteItemValidator->validate($item)) {
                 continue;
             }
 
@@ -105,18 +159,19 @@ class Frenet_Shipping_Model_Cache_Manager
                 $productId = $item->getParentItem()->getProductId() . '-' . $productId;
             }
 
-            $qty = (float) $item->getQty();
+            $qty = (float) $this->itemQuantityCalculator->calculate($item);
 
             $items[$productId] = $qty;
         }
 
         ksort($items);
 
-        $cacheKey = $this->objects()->serializer()->serialize(array(
-            Mage::helper('frenet_shipping')->normalizePostcode($origPostcode),
-            Mage::helper('frenet_shipping')->normalizePostcode($destPostcode),
-            $items
-        ));
+        $cacheKey = $this->serializer->serialize([
+            $this->postcodeNormalizer->format($origPostcode),
+            $this->postcodeNormalizer->format($destPostcode),
+            $items,
+            $this->config->isMultiQuoteEnabled() ? 'multi' : null
+        ]);
 
         return $cacheKey;
     }
@@ -126,7 +181,7 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private function isCacheEnabled()
     {
-        return (bool) $this->objects()->cache()->canUse(self::TYPE_IDENTIFIER);
+        return (bool) Mage::app()->useCache(FrenetCacheType::TYPE_IDENTIFIER);
     }
 
     /**
