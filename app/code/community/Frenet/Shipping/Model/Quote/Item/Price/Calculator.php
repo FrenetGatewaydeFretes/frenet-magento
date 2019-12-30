@@ -1,36 +1,48 @@
 <?php
 
+use Mage_Sales_Model_Quote_Item as QuoteItem;
+
 class Frenet_Shipping_Model_Quote_Item_Price_Calculator
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
+     */
+    private $itemQuantityCalculator;
+
+    public function __construct()
+    {
+        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+    }
+
+    /**
+     * @param QuoteItem $item
      *
      * @return float
      */
-    public function getPrice(Mage_Sales_Model_Quote_Item $item)
+    public function getPrice(QuoteItem $item)
     {
         return $this->getRealItem($item)->getPrice();
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    public function getFinalPrice(Mage_Sales_Model_Quote_Item $item)
+    public function getFinalPrice(QuoteItem $item)
     {
         $realItem = $this->getRealItem($item);
-        return $realItem->getRowTotal() / $this->objects()->quoteItemQtyCalculator()->calculate($realItem);
+        return $realItem->getRowTotal() / $this->itemQuantityCalculator->calculate($realItem);
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param QuoteItem $item
      *
-     * @return Mage_Sales_Model_Quote_Item
+     * @return QuoteItem
      */
-    private function getRealItem(Mage_Sales_Model_Quote_Item $item)
+    private function getRealItem(QuoteItem $item)
     {
         $type = $item->getProductType();
 

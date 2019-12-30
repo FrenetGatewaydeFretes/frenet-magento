@@ -92,7 +92,6 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
          */
         if (!$this->multiQuoteValidator->canProcessMultiQuote($rateRequest)) {
             $this->packageLimit->removeLimit();
-
             return $this->processPackages();
         }
 
