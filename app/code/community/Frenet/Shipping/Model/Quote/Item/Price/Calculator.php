@@ -51,17 +51,18 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator
         }
 
         switch ($type) {
-            case Mage_Catalog_Model_Product_Type::TYPE_BUNDLE:
-                // $qty = $this->calculateBundleProduct($item);
-                break;
-
-            case Mage_Catalog_Model_Product_Type::TYPE_GROUPED:
-                // $qty = $this->calculateGroupedProduct($item);
-                break;
-
             case Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE:
                 return $item->getParentItem();
-
+            case Mage_Catalog_Model_Product_Type::TYPE_GROUPED:
+                /**
+                 * Product is Grouped.
+                 * @todo Validate if this approach is the correct one.
+                 */
+            case Mage_Catalog_Model_Product_Type::TYPE_BUNDLE:
+                /**
+                 * Product is Bundle.
+                 * @todo Validate if this approach is the correct one.
+                 */
             case Mage_Catalog_Model_Product_Type::TYPE_VIRTUAL:
             case Mage_Downloadable_Model_Product_Type::TYPE_DOWNLOADABLE:
             case Mage_Catalog_Model_Product_Type::TYPE_SIMPLE:
