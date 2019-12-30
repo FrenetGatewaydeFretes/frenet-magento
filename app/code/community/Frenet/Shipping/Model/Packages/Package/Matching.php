@@ -2,6 +2,11 @@
 
 use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 
+/**
+ * Class Frenet_Shipping_Model_Packages_Package_Matching
+ *
+ * @todo Review this class.
+ */
 class Frenet_Shipping_Model_Packages_Package_Matching
 {
     /**
@@ -18,6 +23,23 @@ class Frenet_Shipping_Model_Packages_Package_Matching
      * @var array
      */
     private $services = [];
+
+    /**
+     * @var \Frenet\ObjectType\Entity\Shipping\Quote\ServiceFactory
+     */
+    private $serviceFactory;
+
+    /**
+     * PackageMatching constructor.
+     *
+     * @param \Frenet\ObjectType\Entity\Shipping\Quote\ServiceFactory $serviceFactory
+     */
+    public function __construct()
+    {
+        $this->serviceFactory = \Frenet\Framework\ObjectManager::create(
+            \Frenet\ObjectType\Entity\Shipping\Quote\ServiceFactory::class
+        );
+    }
 
     /**
      * @param array $results
@@ -118,11 +140,10 @@ class Frenet_Shipping_Model_Packages_Package_Matching
     private function buildServicesResult()
     {
         $results = [];
-        $factory = new \Frenet\ObjectType\Entity\Shipping\Quote\ServiceFactory();
 
         /** @var array $serviceData */
         foreach ($this->services as $serviceData) {
-            $results[] = $factory->create()->setData($serviceData);
+            $results[] = $this->serviceFactory->create()->setData($serviceData);
         }
 
         return array_merge($results, $this->fullResults);
