@@ -1,4 +1,15 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ * @package  Frenet_Shipping
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2019.
+ */
 
 Frenet_Shipping_Model_DependencyFinder::includeDependency();
 
@@ -15,9 +26,19 @@ class Frenet_Shipping_Model_Service_Api
     private $api;
 
     /**
+     * @var Frenet_Shipping_Model_Config
+     */
+    private $config;
+
+    /**
      * @var bool
      */
     private $isInitialized = false;
+
+    public function __construct()
+    {
+        $this->config = $this->objects()->config();
+    }
 
     /**
      * @inheritdoc
@@ -46,30 +67,33 @@ class Frenet_Shipping_Model_Service_Api
         return $this->api->shipping();
     }
 
+    /**
+     * Initializes the API Service.
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     private function init()
     {
         if (true === $this->isInitialized) {
             return;
         }
 
-        $this->api = \Frenet\ApiFactory::create($this->objects()->config()->getToken());
+        $this->api = \Frenet\ApiFactory::create($this->config->getToken());
 
         $this->initLogs();
         $this->isInitialized = true;
     }
 
-    /**
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
     private function initLogs()
     {
-        if (true == $this->objects()->config()->isDebugModeEnabled()) {
+        if (true == $this->config->isDebugModeEnabled()) {
             $this->api
                 ->config()
                 ->debugger()
                 ->isEnabled(true)
                 ->setFilePath(Mage::getBaseDir('log'))
-                ->setFilename($this->objects()->config()->getDebugFilename());
+                ->setFilename($this->config->getDebugFilename());
         }
     }
 }
