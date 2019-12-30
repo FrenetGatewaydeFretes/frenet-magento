@@ -8,6 +8,16 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
+     * @var ApiService
+     */
+    private $apiService;
+
+    public function __construct()
+    {
+        $this->apiService = $this->objects()->apiService();
+    }
+
+    /**
      * @inheritdoc
      */
     public function findByTrackingNumber($trackingNumber)
@@ -19,7 +29,7 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
         }
 
         /** @var \Frenet\ObjectType\Entity\Shipping\InfoInterface $info */
-        $info = $this->objects()->apiService()->shipping()->info()->execute();
+        $info = $this->apiService->shipping()->info()->execute();
         $services = (array) $info->getAvailableShippingServices();
 
         /** @var string $name */
