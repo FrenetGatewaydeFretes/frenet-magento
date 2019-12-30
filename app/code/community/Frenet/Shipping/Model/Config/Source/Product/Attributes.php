@@ -1,10 +1,23 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ * @package  Frenet\Shipping
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2019.
+ */
 
 /**
  * Class Frenet_Shipping_Model_Config_Source_Product_Attributes
  */
 class Frenet_Shipping_Model_Config_Source_Product_Attributes
 {
+    use Frenet_Shipping_Helper_ObjectsTrait;
+
     /**
      * @var array
      */
@@ -38,12 +51,8 @@ class Frenet_Shipping_Model_Config_Source_Product_Attributes
     {
         if (empty($this->options)) {
             /** @var Mage_Catalog_Model_Resource_Eav_Attribute $attribute */
-            foreach ($this->getProductAttributes() as $attribute) {
-                if (!$this->validateAttribute($attribute)) {
-                    continue;
-                }
-
-                $this->options[$attribute->getAttributeCode()] = $attribute->getFrontendLabel();
+            foreach ($this->getCollection() as $attribute) {
+                $this->options[$attribute->getAttributeCode()] = $attribute->getDefaultFrontendLabel();
             }
         }
 
@@ -51,26 +60,9 @@ class Frenet_Shipping_Model_Config_Source_Product_Attributes
     }
 
     /**
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
-     * @return bool
-     */
-    private function validateAttribute(Mage_Catalog_Model_Resource_Eav_Attribute $attribute)
-    {
-        if (!$attribute->getAttributeCode()) {
-            return false;
-        }
-
-        if (!$attribute->getFrontendLabel()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @return Mage_Catalog_Model_Resource_Product_Attribute_Collection
      */
-    private function getProductAttributes()
+    private function getCollection()
     {
         /** @var Mage_Catalog_Model_Resource_Product_Attribute_Collection $collection */
         $collection = Mage::getResourceModel('catalog/product_attribute_collection');
