@@ -40,16 +40,16 @@
         },
         {
             "name": "frenet/frenet-php",
-            "version": "1.0.6",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FrenetGatewaydeFretes/frenet-php.git",
-                "reference": "9428640d581d3b3c5e5dd731e8e7288b07b09050"
+                "reference": "7da4b27df1a008d060c1cc0d44b63d2640748e4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FrenetGatewaydeFretes/frenet-php/zipball/9428640d581d3b3c5e5dd731e8e7288b07b09050",
-                "reference": "9428640d581d3b3c5e5dd731e8e7288b07b09050",
+                "url": "https://api.github.com/repos/FrenetGatewaydeFretes/frenet-php/zipball/7da4b27df1a008d060c1cc0d44b63d2640748e4f",
+                "reference": "7da4b27df1a008d060c1cc0d44b63d2640748e4f",
                 "shasum": ""
             },
             "require": {
@@ -92,7 +92,7 @@
                 "sdk",
                 "shipping"
             ],
-            "time": "2019-11-12T21:07:24+00:00"
+            "time": "2019-12-30T21:50:13+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

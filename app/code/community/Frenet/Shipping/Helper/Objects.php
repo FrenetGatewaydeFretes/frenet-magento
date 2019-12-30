@@ -98,7 +98,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function productCategoryExtractor()
     {
-        return $this->getInstance('frenet_shipping/catalog_product_dimensions_extractor');
+        return $this->getInstance('frenet_shipping/catalog_product_category_extractor');
     }
 
     /**

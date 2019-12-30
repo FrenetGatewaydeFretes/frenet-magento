@@ -11,9 +11,7 @@
  * Copyright (c) 2019.
  */
 
-use Magento\Framework\Serialize\SerializerInterface;
 use Mage_Shipping_Model_Rate_Request as RateRequest;
-use Frenet\Shipping\Model\Cache\Type\Frenet as FrenetCacheType;
 
 /**
  * Class CacheManager
@@ -23,6 +21,16 @@ use Frenet\Shipping\Model\Cache\Type\Frenet as FrenetCacheType;
 class Frenet_Shipping_Model_Cache_Manager
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
+
+    /**
+     * Cache type code unique among all cache types
+     */
+    const TYPE_IDENTIFIER = 'frenet_api_result';
+
+    /**
+     * Cache tag used to distinguish the cache type from all other cache
+     */
+    const CACHE_TAG = 'FRENET_API_RESULT';
 
     /**
      * @var Mage_Core_Model_Cache
@@ -98,7 +106,7 @@ class Frenet_Shipping_Model_Cache_Manager
 
         $identifier = $this->generateCacheKey($request);
         $lifetime = null;
-        $tags = [FrenetCacheType::CACHE_TAG];
+        $tags = [self::CACHE_TAG];
 
         return $this->cache->save($this->prepareBeforeSaving($services), $identifier, $tags, $lifetime);
     }
@@ -115,7 +123,7 @@ class Frenet_Shipping_Model_Cache_Manager
 
         /** @var array $service */
         foreach ($services as $service) {
-            $newData[] = ($this->createServiceInstance())->setData($service);
+            $newData[] = $this->createServiceInstance()->setData($service);
         }
 
         return $newData;
@@ -181,7 +189,7 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private function isCacheEnabled()
     {
-        return (bool) Mage::app()->useCache(FrenetCacheType::TYPE_IDENTIFIER);
+        return (bool) Mage::app()->useCache(self::TYPE_IDENTIFIER);
     }
 
     /**

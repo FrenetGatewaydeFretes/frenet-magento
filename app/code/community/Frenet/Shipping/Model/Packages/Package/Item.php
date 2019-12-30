@@ -1,6 +1,6 @@
 <?php
 
-use Frenet\Shipping\Api\Data\AttributesMappingInterface;
+use Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface as AttributesMappingInterface;
 
 /**
  * Class Frenet_Shipping_Model_Packages_Package_Item
