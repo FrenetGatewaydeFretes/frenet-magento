@@ -1,32 +1,66 @@
 <?php
 
+use Mage_Shipping_Model_Rate_Request as RateRequest;
+use Frenet_Shipping_Model_Packages_Package as Package;
+
 class Frenet_Shipping_Model_Packages_Package_Manager
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * @var Frenet_Shipping_Model_Packages_Package
+     * @var Package
      */
     private $currentPackage = null;
 
     /**
-     * @var Frenet_Shipping_Model_Packages_Package[]
+     * @var Package[]
      */
     private $packages = [];
 
     /**
-     * @param Mage_Shipping_Model_Rate_Request $rateRequest
+     * @var Frenet_Shipping_Model_Packages_Package_Factory
+     */
+    private $packageFactory;
+
+    /**
+     * @var Frenet_Shipping_Model_Quote_Item_Validator
+     */
+    private $quoteItemValidator;
+
+    /**
+     * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
+     */
+    private $itemQuantityCalculator;
+
+    /**
+     * @var Frenet_Shipping_Model_Packages_Package_Limit
+     */
+    private $packageLimit;
+
+    /**
+     * PackageManager constructor.
+     */
+    public function __construct()
+    {
+        $this->quoteItemValidator = $this->objects()->quoteItemValidator();
+        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->packageFactory = $this->objects()->packageFactory();
+        $this->packageLimit = $this->objects()->packageLimit();
+    }
+
+    /**
+     * @param RateRequest $rateRequest
      *
      * @return $this
      */
-    public function process(Mage_Shipping_Model_Rate_Request $rateRequest)
+    public function process(RateRequest $rateRequest)
     {
         $this->distribute($rateRequest);
         return $this;
     }
 
     /**
-     * @return Frenet_Shipping_Model_Packages_Package[]
+     * @return Package[]
      */
     public function getPackages()
     {
@@ -51,11 +85,11 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @param Mage_Shipping_Model_Rate_Request $rateRequest
+     * @param RateRequest $rateRequest
      *
      * @return $this
      */
-    private function distribute(Mage_Shipping_Model_Rate_Request $rateRequest)
+    private function distribute(RateRequest $rateRequest)
     {
         /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ($this->getUnitItems($rateRequest) as $item) {
@@ -80,7 +114,7 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @return Frenet_Shipping_Model_Packages_Package
+     * @return Package
      */
     private function getPackage()
     {
@@ -92,17 +126,17 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @return Frenet_Shipping_Model_Packages_Package
+     * @return $this
      */
     private function useNewPackage()
     {
         $this->currentPackage = $this->createPackage();
 
-        if ($this->objects()->packageLimit()->isUnlimited()) {
+        if ($this->packageLimit->isUnlimited()) {
             $this->packages['full'] = $this->currentPackage;
         }
 
-        if (!$this->objects()->packageLimit()->isUnlimited()) {
+        if (!$this->packageLimit->isUnlimited()) {
             $this->packages[] = $this->currentPackage;
         }
 
@@ -110,29 +144,29 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @return Frenet_Shipping_Model_Packages_Package
+     * @return Package
      */
     private function createPackage()
     {
-        return $this->objects()->package();
+        return $this->packageFactory->create();
     }
 
     /**
-     * @param Mage_Shipping_Model_Rate_Request $rateRequest
+     * @param RateRequest $rateRequest
      *
      * @return array
      */
-    private function getUnitItems(Mage_Shipping_Model_Rate_Request $rateRequest)
+    private function getUnitItems(RateRequest $rateRequest)
     {
         $unitItems = [];
 
         /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ($rateRequest->getAllItems() as $item) {
-            if (!$this->objects()->quoteItemValidator()->validate($item)) {
+            if (!$this->quoteItemValidator->validate($item)) {
                 continue;
             }
 
-            $qty = $this->objects()->quoteItemQtyCalculator()->calculate($item);
+            $qty = $this->itemQuantityCalculator->calculate($item);
 
             for ($i = 1; $i <= $qty; $i++) {
                 $unitItems[] = $item;

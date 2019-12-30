@@ -142,6 +142,14 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Packages_Package_Factory
+     */
+    public function packageFactory()
+    {
+        return $this->getInstance('frenet_shipping/packages_package_factory');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_Packages_Package_Manager
      */
     public function packageManager()
