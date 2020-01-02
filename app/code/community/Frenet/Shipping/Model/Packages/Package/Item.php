@@ -32,7 +32,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     private $storeManagement;
 
     /**
-     * @var Mage_Catalog_Model_Resource_ProductFactory
+     * @var Frenet_Shipping_Model_Factory_Product_Resource
      */
     private $productResourceFactory;
 
