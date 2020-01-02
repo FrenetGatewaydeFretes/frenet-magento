@@ -129,9 +129,9 @@ class Frenet_Shipping_Model_Packages_Package_Item
      *
      * @return $this
      */
-    public function setQty(float $qty)
+    public function setQty($qty)
     {
-        $this->qty = $qty;
+        $this->qty = (float) $qty;
         return $this;
     }
 

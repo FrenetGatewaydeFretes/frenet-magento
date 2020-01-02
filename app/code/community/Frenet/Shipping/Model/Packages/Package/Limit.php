@@ -37,9 +37,9 @@ class Frenet_Shipping_Model_Packages_Package_Limit
      *
      * @return $this
      */
-    public function setMaxWeight(float $weight)
+    public function setMaxWeight($weight)
     {
-        $this->maxWeight = $weight;
+        $this->maxWeight = (float) $weight;
         return $this;
     }
 
