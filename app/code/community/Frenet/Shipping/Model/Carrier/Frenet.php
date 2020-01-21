@@ -205,50 +205,59 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     }
 
     /**
+     * @return bool
+     */
+    public function isTrackingAvailable()
+    {
+        return true;
+    }
+
+    /**
      * @param $trackingNumbers
      *
-     * @return Mage_Shipping_Model_Rate_Result
+     * @return Mage_Shipping_Model_Tracking_Result_Status
      */
-    public function getTracking($trackingNumbers)
+    public function getTrackingInfo($trackingNumbers)
     {
         if (!is_array($trackingNumbers)) {
             $trackingNumbers = [$trackingNumbers];
         }
 
-        $this->prepareTracking($trackingNumbers);
-
-        return $this->result;
+        return $this->prepareTracking($trackingNumbers);
     }
 
     /**
      * @param array $trackingNumbers
      *
-     * @return Mage_Shipping_Model_Tracking_Result
+     * @return Mage_Shipping_Model_Tracking_Result_Status
      */
     private function prepareTracking(array $trackingNumbers)
     {
-        /** @var Mage_Shipping_Model_Tracking_Result $result */
-        $result = Mage::getModel('shipping/tracking_result');
+        /** @var Mage_Shipping_Model_Tracking_Result_Status $status */
+        $status = Mage::getModel('shipping/tracking_result_status');
 
-        /** @var string $trackingNumber */
+        /**
+         * @var string $trackingNumber
+         * @todo It's currently appending only one tracking per time. Find a solution to append more than one.
+         */
         foreach ($trackingNumbers as $trackingNumber) {
             /** @var \Frenet\ObjectType\Entity\Shipping\Info\ServiceInterface $service */
             $service = $this->serviceFinder->findByTrackingNumber($trackingNumber);
             $serviceCode = $service ? $service->getServiceCode() : null;
 
-            /** @var Mage_Shipping_Model_Tracking_Result_Status $status */
-            $status = $this->_trackStatusFactory->create();
-            $status->setCarrier(self::CARRIER_CODE);
-            $status->setCarrierTitle($this->getConfigData('title'));
-            $status->setTracking($trackingNumber);
-            $status->setPopup(1);
-            $status->setTrackSummary($this->prepareTrackingInformation($status, $trackingNumber, $serviceCode));
-            $result->append($status);
+            $status->setData([
+                'carrier' => self::CARRIER_CODE,
+                'carrier_title' => $this->getConfigData('title'),
+                'tracking' => $trackingNumber,
+                'popup' => 1,
+            ]);
+
+            /** @todo track_summary needs to be filled here. */
+            $this->prepareTrackingInformation($status, $trackingNumber, $serviceCode);
+            break;
         }
 
-        $this->result = $result;
-
-        return $result;
+        return $status;
     }
 
     /**
@@ -258,8 +267,11 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      *
      * @return void
      */
-    private function prepareTrackingInformation($status, $trackingNumber, $shippingServiceCode)
-    {
+    private function prepareTrackingInformation(
+        Mage_Shipping_Model_Tracking_Result_Status $status,
+        $trackingNumber,
+        $shippingServiceCode
+    ) {
         /** @var \Frenet\ObjectType\Entity\Tracking\TrackingInfoInterface $trackingInfo */
         $trackingInfo = $this->trackingService->track($trackingNumber, $shippingServiceCode);
 
@@ -276,6 +288,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         $status->setDeliveryLocation($event->getEventLocation());
         $status->setShippedDate($event->getEventDatetime());
         $status->setService($event->getTrackingInfo()->getServiceDescription());
+        $status->setTrackSummary($event->getTrackingInfo()->getServiceDescription());
     }
 
     /**
