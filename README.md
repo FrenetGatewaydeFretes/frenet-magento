@@ -1,3 +1,5 @@
+[![Frenet Gateway de Fretes](./docs/images/logo.png "Frenet Gateway de Fretes")](https://frenet.com.br)
+
 # Frenet Gateway de Fretes para Magento 1
 Integre seu Magento aos serviços da Frenet de forma rápida e fácil.
 
