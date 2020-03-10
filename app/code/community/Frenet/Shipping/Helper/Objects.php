@@ -6,6 +6,11 @@
 class Frenet_Shipping_Helper_Objects
 {
     /**
+     * @var string
+     */
+    private $defaultClassGroup = 'frenet_shipping';
+
+    /**
      * @return Mage_Core_Model_Cache
      */
     public function cache()
@@ -18,7 +23,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function cacheManager()
     {
-        return $this->getInstance('frenet_shipping/cache_manager');
+        return $this->getInstance('cache_manager');
     }
 
     /**
@@ -26,7 +31,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function serializer()
     {
-        return $this->getInstance('frenet_shipping/serializer');
+        return $this->getInstance('serializer');
     }
 
     /**
@@ -34,7 +39,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function calculator()
     {
-        return $this->getInstance('frenet_shipping/calculator');
+        return $this->getInstance('calculator');
     }
 
     /**
@@ -42,7 +47,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function config()
     {
-        return $this->getInstance('frenet_shipping/config');
+        return $this->getInstance('config');
     }
 
     /**
@@ -50,7 +55,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function quoteMultiQuoteValidator()
     {
-        return $this->getInstance('frenet_shipping/quote_multi_quote_validator');
+        return $this->getInstance('quote_multi_quote_validator');
     }
 
     /**
@@ -58,7 +63,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function quoteItemValidator()
     {
-        return $this->getInstance('frenet_shipping/quote_item_validator');
+        return $this->getInstance('quote_item_validator');
     }
 
     /**
@@ -66,7 +71,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function quoteItemQtyCalculator()
     {
-        return $this->getInstance('frenet_shipping/quote_item_quantity_calculator');
+        return $this->getInstance('quote_item_quantity_calculator');
     }
 
     /**
@@ -74,7 +79,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function quoteItemPriceCalculator()
     {
-        return $this->getInstance('frenet_shipping/quote_item_price_calculator');
+        return $this->getInstance('quote_item_price_calculator');
     }
 
     /**
@@ -82,7 +87,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function productAttributesMapping()
     {
-        return $this->getInstance('frenet_shipping/catalog_product_attributes_mapping');
+        return $this->getInstance('catalog_product_attributes_mapping');
     }
 
     /**
@@ -90,7 +95,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function productDimensionsExtractor()
     {
-        return $this->getInstance('frenet_shipping/catalog_product_dimensions_extractor');
+        return $this->getInstance('catalog_product_dimensions_extractor');
     }
 
     /**
@@ -98,7 +103,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function productCategoryExtractor()
     {
-        return $this->getInstance('frenet_shipping/catalog_product_category_extractor');
+        return $this->getInstance('catalog_product_category_extractor');
     }
 
     /**
@@ -106,7 +111,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function weightConverter()
     {
-        return $this->getInstance('frenet_shipping/weight_converter');
+        return $this->getInstance('weight_converter');
     }
 
     /**
@@ -114,7 +119,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function apiService()
     {
-        return $this->getInstance('frenet_shipping/service_api');
+        return $this->getInstance('service_api');
     }
 
     /**
@@ -122,7 +127,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function trackingService()
     {
-        return $this->getInstance('frenet_shipping/tracking');
+        return $this->getInstance('tracking');
     }
 
     /**
@@ -130,7 +135,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function serviceFinder()
     {
-        return $this->getInstance('frenet_shipping/service_finder');
+        return $this->getInstance('service_finder');
     }
 
     /**
@@ -138,7 +143,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function package()
     {
-        return $this->getInstance('frenet_shipping/packages_package');
+        return $this->getInstance('packages_package');
     }
 
     /**
@@ -146,7 +151,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageFactory()
     {
-        return $this->getInstance('frenet_shipping/packages_package_factory');
+        return $this->getInstance('packages_package_factory');
     }
 
     /**
@@ -154,7 +159,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageManager()
     {
-        return $this->getInstance('frenet_shipping/packages_package_manager');
+        return $this->getInstance('packages_package_manager');
     }
 
     /**
@@ -162,7 +167,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageCalculator()
     {
-        return $this->getInstance('frenet_shipping/packages_package_calculator');
+        return $this->getInstance('packages_package_calculator');
     }
 
     /**
@@ -170,7 +175,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageMatching()
     {
-        return $this->getInstance('frenet_shipping/packages_package_matching');
+        return $this->getInstance('packages_package_matching');
     }
 
     /**
@@ -178,7 +183,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageLimit()
     {
-        return $this->getInstance('frenet_shipping/packages_package_limit');
+        return $this->getInstance('packages_package_limit');
     }
 
     /**
@@ -186,7 +191,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageItem()
     {
-        return $this->getInstance('frenet_shipping/packages_package_item');
+        return $this->getInstance('packages_package_item');
     }
 
     /**
@@ -194,7 +199,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function packageItemFactory()
     {
-        return $this->getInstance('frenet_shipping/packages_package_item_factory');
+        return $this->getInstance('packages_package_item_factory');
     }
 
     /**
@@ -202,7 +207,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function storeManagement()
     {
-        return $this->getInstance('frenet_shipping/store_management');
+        return $this->getInstance('store_management');
     }
 
     /**
@@ -210,7 +215,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function productResourceFactory()
     {
-        return $this->getInstance('frenet_shipping/factory_product_resource');
+        return $this->getInstance('factory_product_resource');
     }
 
     /**
@@ -218,7 +223,15 @@ class Frenet_Shipping_Helper_Objects
      */
     public function postcodeNormalizer()
     {
-        return $this->getInstance('frenet_shipping/formatters_postcode_normalizer');
+        return $this->getInstance('formatters_postcode_normalizer');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Validator_Postcode
+     */
+    public function postcodeValidator()
+    {
+        return $this->getInstance('validator_postcode');
     }
 
     /**
@@ -226,7 +239,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function deliveryTimeCalculator()
     {
-        return $this->getInstance('frenet_shipping/delivery_time_calculator');
+        return $this->getInstance('delivery_time_calculator');
     }
 
     /**
@@ -238,10 +251,32 @@ class Frenet_Shipping_Helper_Objects
      */
     private function getInstance($modelClass, array $arguments = array(), $singleton = true)
     {
+        if ($this->canAppendDefaultClassGroup($modelClass)) {
+            $modelClass = $this->defaultClassGroup . '/' . $modelClass;
+        }
+
         if (true === $singleton) {
             return Mage::getSingleton($modelClass, $arguments);
         }
 
         return Mage::getModel($modelClass, $arguments);
+    }
+
+    /**
+     * @param $classGroup
+     *
+     * @return bool
+     */
+    private function canAppendDefaultClassGroup($classGroup)
+    {
+        if (strpos($classGroup, '/')) {
+            return false;
+        }
+
+        if (strpos($classGroup, $this->defaultClassGroup)) {
+            return false;
+        }
+
+        return true;
     }
 }

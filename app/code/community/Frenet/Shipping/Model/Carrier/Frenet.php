@@ -75,6 +75,11 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      */
     private $config;
 
+    /**
+     * @var Frenet_Shipping_Model_Validator_Postcode
+     */
+    private $postcodeValidator;
+
     public function __construct()
     {
         parent::__construct();
@@ -87,6 +92,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         $this->config = $this->objects()->config();
         $this->deliveryTimeCalculator = $this->objects()->deliveryTimeCalculator();
         $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
+        $this->postcodeValidator = $this->objects()->postcodeValidator();
     }
 
     /**
@@ -162,19 +168,14 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      */
     public function processAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {
+        /** Validate destination postcode */
+        if (!$this->postcodeValidator->validate($request->getDestPostcode())) {
+            $this->errors[] = Mage::helper('frenet_shipping')->__('Please inform a valid postcode');
+        }
+
         /** Validate request items data */
         if (empty($request->getAllItems())) {
             $this->errors[] = Mage::helper('frenet_shipping')->__('There is no items in this order');
-        }
-
-        /** Validate destination postcode */
-        if (!$request->getDestPostcode()) {
-            $this->errors[] = Mage::helper('frenet_shipping')->__('Please inform the destination postcode');
-        }
-
-        /** Validate destination postcode */
-        if (!((int) $this->postcodeNormalizer->format($request->getDestPostcode()))) {
-            $this->errors[] = Mage::helper('frenet_shipping')->__('Please inform a valid postcode');
         }
 
         if (!empty($this->errors)) {
@@ -357,9 +358,9 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         $methodInstance = Mage::getModel('shipping/rate_result_method');
         $methodInstance->setCarrier($this->_code)
             ->setCarrierTitle($this->config->getCarrierConfig('title'))
-            ->setMethod($method)
+            ->setMethod($code)
             ->setMethodTitle($methodTitle)
-            ->setMethodDescription($code)
+            ->setMethodDescription($method)
             ->setPrice($price)
             ->setCost($cost);
 
