@@ -10,6 +10,15 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>0</show_in_store>
                     <fields>
+                        <version translate="label">
+                            <label>Version</label>
+                            <frontend_type>label</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>5</sort_order>
+                            <comment><![CDATA[This is the version of your module installation.]]></comment>
+                        </version>
                         <active translate="label">
                             <label>Enabled</label>
                             <frontend_type>select</frontend_type>
