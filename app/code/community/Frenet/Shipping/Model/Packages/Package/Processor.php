@@ -11,6 +11,7 @@
  * Copyright (c) 2020.
  */
 
+use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 use Frenet_Shipping_Model_Packages_Package as Package;
 use Frenet_Shipping_Model_Packages_Package_Item as PackageItem;
 use Mage_Shipping_Model_Rate_Request as RateRequest;
@@ -38,11 +39,6 @@ class Frenet_Shipping_Model_Packages_Package_Processor
     private $quoteItemValidator;
 
     /**
-     * @var Mage_Checkout_Model_Session
-     */
-    private $checkoutSession;
-
-    /**
      * @var Frenet_Shipping_Model_Config
      */
     private $config;
@@ -53,25 +49,23 @@ class Frenet_Shipping_Model_Packages_Package_Processor
     private $quoteCouponProcessor;
 
     /**
-     * @var Frenet_Shipping_Model_Rate_Request_Service
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
      */
-    private $rateRequestService;
+    private $rateRequestProvider;
 
     public function __construct()
     {
         $this->apiService = $this->objects()->apiService();
-        $this->checkoutSession = Mage::getSingleton('checkout/session');
         $this->quoteItemValidator = $this->objects()->quoteItemValidator();
         $this->config = $this->objects()->config();
-        $this->rateRequestService = $this->objects()->rateRequestService();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
         $this->quoteCouponProcessor = $this->objects()->quoteCouponProcessor();
     }
 
     /**
-     * @param Package     $package
-     * @param RateRequest $rateRequest
+     * @param Package $package
      *
-     * @return array
+     * @return Service[]
      */
     public function process(Package $package)
     {
@@ -112,7 +106,7 @@ class Frenet_Shipping_Model_Packages_Package_Processor
     }
 
     /**
-     * @return array
+     * @return Service[]
      */
     private function callService()
     {
@@ -124,20 +118,18 @@ class Frenet_Shipping_Model_Packages_Package_Processor
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
      * @return $this
      */
     private function initServiceQuote()
     {
         /** @var RateRequest $rateRequest */
-        $rateRequest = $this->rateRequestService->getRateRequest();
+        $rateRequest = $this->rateRequestProvider->getRateRequest();
 
         /** @var \Frenet\Command\Shipping\QuoteInterface $quote */
         $this->serviceQuote = $this->apiService->shipping()->quote();
         $this->serviceQuote->setSellerPostcode($this->config->getOriginPostcode())
             ->setRecipientPostcode($rateRequest->getDestPostcode())
-            ->setRecipientCountry($rateRequest->getCountryId());
+            ->setRecipientCountry($rateRequest->getDestCountryId());
 
         $this->quoteCouponProcessor->applyCouponCode($this->serviceQuote);
 

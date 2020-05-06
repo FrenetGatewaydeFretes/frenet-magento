@@ -1,7 +1,6 @@
 <?php
 
-use Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface as AttributesMapping;
-use Mage_Shipping_Model_Rate_Request as RateRequest;
+use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 
 class Frenet_Shipping_Model_Calculator implements Frenet_Shipping_Model_CalculatorInterface
 {
@@ -18,31 +17,56 @@ class Frenet_Shipping_Model_Calculator implements Frenet_Shipping_Model_Calculat
     private $packagesCalculator;
 
     /**
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
+     */
+    private $rateRequestProvider;
+
+    /**
      * Calculator constructor.
      */
     public function __construct()
     {
         $this->cacheManager = $this->objects()->cacheManager();
         $this->packagesCalculator = $this->objects()->packageCalculator();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
      * @inheritdoc
      */
-    public function getQuote(RateRequest $request)
+    public function getQuote()
     {
-        if ($result = $this->cacheManager->load($request)) {
+        $result = $this->cacheManager->load();
+        if ($result) {
             return $result;
         }
 
-        /** @var RateRequest[] $packages */
-        $services = $this->packagesCalculator->calculate($request);
+        /** @var Service[] $services */
+        $services = $this->packagesCalculator->calculate();
+
+        foreach ($services as $service) {
+            $this->processService($service);
+        }
 
         if ($services) {
-            $this->cacheManager->save($services, $request);
+            $this->cacheManager->save($services);
             return $services;
         }
 
-        return false;
+        return [];
+    }
+
+    /**
+     * @param Service $service
+     *
+     * @return Service
+     */
+    private function processService(Service $service)
+    {
+        $service->setData(
+            'service_description',
+            str_replace('|', "\n", $service->getServiceDescription())
+        );
+        return $service;
     }
 }

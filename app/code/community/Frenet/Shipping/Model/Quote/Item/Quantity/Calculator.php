@@ -11,8 +11,9 @@
  * Copyright (c) 2020.
  */
 
-use Mage_Sales_Model_Quote_Item as Item;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 use Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface as ItemQuantityCalculatorInterface;
+use Frenet_Shipping_Model_Catalog_ProductType as ProductType;
 
 /**
  * Class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
@@ -20,34 +21,34 @@ use Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface as ItemQuantit
 class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator implements ItemQuantityCalculatorInterface
 {
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    public function calculate(Item $item)
+    public function calculate(QuoteItem $item)
     {
         $type = $item->getProductType();
 
-        if ($item->getParentItemId()) {
+        if ($item->getParentItem()) {
             $type = $item->getParentItem()->getProductType();
         }
 
         switch ($type) {
-            case Mage_Catalog_Model_Product_Type::TYPE_BUNDLE:
+            case ProductType::TYPE_BUNDLE:
                 $qty = $this->calculateBundleProduct($item);
                 break;
 
-            case Mage_Catalog_Model_Product_Type::TYPE_GROUPED:
+            case ProductType::TYPE_GROUPED:
                 $qty = $this->calculateGroupedProduct($item);
                 break;
 
-            case Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE:
+            case ProductType::TYPE_CONFIGURABLE:
                 $qty = $this->calculateConfigurableProduct($item);
                 break;
 
-            case Mage_Catalog_Model_Product_Type::TYPE_VIRTUAL:
-            case Mage_Downloadable_Model_Product_Type::TYPE_DOWNLOADABLE:
-            case Mage_Catalog_Model_Product_Type::TYPE_SIMPLE:
+            case ProductType::TYPE_VIRTUAL:
+            case ProductType::TYPE_DOWNLOADABLE:
+            case ProductType::TYPE_SIMPLE:
             default:
                 $qty = $this->calculateSimpleProduct($item);
         }
@@ -56,32 +57,32 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator implements ItemQuanti
     }
 
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    private function calculateSimpleProduct(Item $item)
+    private function calculateSimpleProduct(QuoteItem $item)
     {
         return (float) $item->getQty();
     }
 
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    private function calculateBundleProduct(Item $item)
+    private function calculateBundleProduct(QuoteItem $item)
     {
         $bundleQty = (float) $item->getParentItem()->getQty();
         return (float) $item->getQty() * $bundleQty;
     }
 
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    private function calculateGroupedProduct(Item $item)
+    private function calculateGroupedProduct(QuoteItem $item)
     {
         return (float) $item->getQty();
     }
@@ -89,11 +90,11 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator implements ItemQuanti
     /**
      * The right quantity for configurable products are on the parent item.
      *
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    private function calculateConfigurableProduct(Item $item)
+    private function calculateConfigurableProduct(QuoteItem $item)
     {
         return (float) $item->getParentItem()->getQty();
     }

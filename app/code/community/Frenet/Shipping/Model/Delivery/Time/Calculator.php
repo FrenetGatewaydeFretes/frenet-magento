@@ -1,6 +1,7 @@
 <?php
 
-use Mage_Shipping_Model_Rate_Request as RateRequest;
+use Mage_Catalog_Model_Product as Product;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 use Frenet\ObjectType\Entity\Shipping\Quote\ServiceInterface;
 
 class Frenet_Shipping_Model_Delivery_Time_Calculator
@@ -23,6 +24,11 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
     private $storeManagement;
 
     /**
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
+     */
+    private $rateRequestProvider;
+
+    /**
      * DeliveryTimeCalculator constructor.
      */
     public function __construct()
@@ -30,21 +36,21 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
         $this->productResourceFactory = $this->objects()->productResourceFactory();
         $this->storeManagement = $this->objects()->storeManagement();
         $this->config = $this->objects()->config();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
-     * @param Mage_Shipping_Model_Rate_Request $rateRequest
-     * @param ServiceInterface                 $service
+     * @param ServiceInterface $service
      *
      * @return int
-     * @throws Mage_Core_Model_Store_Exception
      */
-    public function calculate(RateRequest $rateRequest, ServiceInterface $service)
+    public function calculate(ServiceInterface $service)
     {
+        $rateRequest = $this->rateRequestProvider->getRateRequest();
         $serviceForecast = $service->getDeliveryTime();
         $maxProductForecast = 0;
 
-        /** @var Mage_Sales_Model_Quote_Item $item */
+        /** @var QuoteItem $item */
         foreach ($rateRequest->getAllItems() as $item) {
             $leadTime = $this->extractProductLeadTime($item->getProduct());
 
@@ -59,12 +65,11 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
     }
 
     /**
-     * @param Mage_Catalog_Model_Product $product
+     * @param Product $product
      *
      * @return int
-     * @throws Mage_Core_Model_Store_Exception
      */
-    private function extractProductLeadTime(Mage_Catalog_Model_Product $product)
+    private function extractProductLeadTime(Product $product)
     {
         $leadTime = max($product->getData('lead_time'), 0);
 

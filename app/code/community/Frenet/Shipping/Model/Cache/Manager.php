@@ -12,6 +12,7 @@
  */
 
 use Mage_Shipping_Model_Rate_Request as RateRequest;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 
 /**
  * Class CacheManager
@@ -67,6 +68,11 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private $couponProcessor;
 
+    /**
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
+     */
+    private $rateRequestProvider;
+
     public function __construct()
     {
         $this->serializer = $this->objects()->serializer();
@@ -76,20 +82,19 @@ class Frenet_Shipping_Model_Cache_Manager
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
         $this->couponProcessor = $this->objects()->quoteCouponProcessor();
         $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
-     * @param RateRequest $request
-     *
-     * @return bool
+     * @return array|bool|string
      */
-    public function load(RateRequest $request)
+    public function load()
     {
         if (!$this->isCacheEnabled()) {
             return false;
         }
 
-        $data = $this->cache->load($this->generateCacheKey($request));
+        $data = $this->cache->load($this->generateCacheKey());
 
         if ($data) {
             $data = $this->prepareAfterLoading($data);
@@ -99,22 +104,26 @@ class Frenet_Shipping_Model_Cache_Manager
     }
 
     /**
-     * @param array       $services
-     * @param RateRequest $request
+     * @param array $services
      *
      * @return bool
      */
-    public function save(array $services, RateRequest $request)
+    public function save(array $services)
     {
         if (!$this->isCacheEnabled()) {
             return false;
         }
 
-        $identifier = $this->generateCacheKey($request);
+        $identifier = $this->generateCacheKey();
         $lifetime = null;
         $tags = [self::CACHE_TAG];
 
-        return $this->cache->save($this->prepareBeforeSaving($services), $identifier, $tags, $lifetime);
+        return $this->cache->save(
+            $this->prepareBeforeSaving($services),
+            $identifier,
+            $tags,
+            $lifetime
+        );
     }
 
     /**
@@ -155,13 +164,15 @@ class Frenet_Shipping_Model_Cache_Manager
     /**
      * @return string
      */
-    private function generateCacheKey(RateRequest $request)
+    private function generateCacheKey()
     {
+        $request = $this->rateRequestProvider->getRateRequest();
+
         $destPostcode = $request->getDestPostcode();
         $origPostcode = $this->config->getOriginPostcode();
         $items = [];
 
-        /** @var Mage_Sales_Model_Quote_Item $item */
+        /** @var QuoteItem $item */
         foreach ($request->getAllItems() as $item) {
             if (!$this->quoteItemValidator->validate($item)) {
                 continue;

@@ -56,13 +56,11 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
      * @return $this
      */
-    public function process(RateRequest $rateRequest)
+    public function process()
     {
-        $items = $this->packageItemDistributor->distribute($rateRequest);
+        $items = $this->packageItemDistributor->distribute();
 
         /** @var QuoteItem $item */
         foreach ($items as $item) {
@@ -95,6 +93,14 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     {
         $this->currentPackage = null;
         return $this;
+    }
+
+    /**
+     * @return Package
+     */
+    public function createPackage()
+    {
+        return $this->packageFactory->create();
     }
 
     /**
@@ -139,13 +145,5 @@ class Frenet_Shipping_Model_Packages_Package_Manager
         }
 
         return $this;
-    }
-
-    /**
-     * @return Package
-     */
-    private function createPackage()
-    {
-        return $this->packageFactory->create();
     }
 }

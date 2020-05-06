@@ -81,9 +81,9 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     private $postcodeValidator;
 
     /**
-     * @var Frenet_Shipping_Model_Rate_Request_Service
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
      */
-    private $rateRequestService;
+    private $rateRequestProvider;
 
     public function __construct()
     {
@@ -98,7 +98,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         $this->deliveryTimeCalculator = $this->objects()->deliveryTimeCalculator();
         $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
         $this->postcodeValidator = $this->objects()->postcodeValidator();
-        $this->rateRequestService = $this->objects()->rateRequestService();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
@@ -116,17 +116,19 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         }
 
         /** This service will be used all the way long. */
-        $this->rateRequestService->setRateRequest($request);
+        $this->rateRequestProvider->setRateRequest($request);
+        $results = $this->calculator->getQuote();
 
         /** @var array $results */
-        if (!$results = $this->calculator->getQuote($request)) {
-            $this->rateRequestService->clear();
+        if (!$results) {
+            $this->rateRequestProvider->clear();
             return $this->result;
         }
 
-        $this->prepareResult($request, $results);
+        $this->prepareResult($results);
 
-        $this->rateRequestService->clear();
+        $this->rateRequestProvider->clear();
+
         return $this->result;
     }
 
@@ -309,7 +311,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      *
      * @return $this
      */
-    private function prepareResult(RateRequest $request, array $services = [])
+    private function prepareResult(array $services = [])
     {
         /** @var Mage_Shipping_Model_Rate_Result $result */
         $this->result = Mage::getModel('shipping/rate_result');
@@ -320,20 +322,26 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
                 continue;
             }
 
-            $deliveryTime = $this->deliveryTimeCalculator->calculate($request, $service);
+            $deliveryTime = $this->deliveryTimeCalculator->calculate($service);
 
-            $methodTitle = $this->prepareMethodTitle(
+            $title = $this->appendInformation(
+                $service->getServiceDescription(),
+                $deliveryTime,
+                $service->getMessage()
+            );
+
+            $description = $this->prepareMethodDescription(
                 $service->getCarrier(),
                 $service->getServiceDescription(),
                 $deliveryTime
             );
 
             $method = $this->prepareMethod(
-                $methodTitle,
                 $service->getServiceCode(),
-                $this->appendInformation($service->getServiceDescription(), $deliveryTime, $service->getMessage()),
-                $service->getShippingPrice(),
-                $service->getShippingPrice()
+                $title,
+                $description,
+                (float) $service->getShippingPrice(),
+                (float) $service->getShippingPrice()
             );
 
             $this->result->append($method);
@@ -355,23 +363,28 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     }
 
     /**
-     * @param string $method
      * @param string $code
-     * @param string $methodTitle
+     * @param string $title
+     * @param string $description
      * @param float  $price
      * @param float  $cost
      *
      * @return Mage_Shipping_Model_Rate_Result_Method
      */
-    private function prepareMethod($method, $code, $methodTitle, $price, $cost)
-    {
+    private function prepareMethod(
+        $code,
+        $title,
+        $description,
+        $price,
+        $cost
+    ) {
         /** @var Mage_Shipping_Model_Rate_Result_Method $methodInstance */
         $methodInstance = Mage::getModel('shipping/rate_result_method');
         $methodInstance->setCarrier($this->_code)
             ->setCarrierTitle($this->config->getCarrierConfig('title'))
             ->setMethod($code)
-            ->setMethodTitle($methodTitle)
-            ->setMethodDescription($method)
+            ->setMethodTitle($title)
+            ->setMethodDescription($description)
             ->setPrice($price)
             ->setCost($cost);
 
@@ -382,11 +395,10 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      * @param string $carrier
      * @param string $description
      * @param int    $deliveryTime
-     * @param string $message
      *
      * @return string
      */
-    private function prepareMethodTitle($carrier, $description, $deliveryTime = 0)
+    private function prepareMethodDescription($carrier, $description, $deliveryTime = 0)
     {
         $title = Mage::helper('frenet_shipping')->__('%s' . self::STR_SEPARATOR . '%s', $carrier, $description);
         $title = $this->appendInformation($title, $deliveryTime);

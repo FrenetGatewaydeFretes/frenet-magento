@@ -1,6 +1,6 @@
 <?php
 
-use Mage_Sales_Model_Quote_Item as Item;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 use Frenet_Shipping_Model_Packages_Package_Item as PackageItem;
 
 class Frenet_Shipping_Model_Packages_Package
@@ -35,12 +35,12 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @param Item $item
-     * @param int  $qty
+     * @param QuoteItem $item
+     * @param int       $qty
      *
      * @return bool
      */
-    public function addItem(Item $item, $qty = 1)
+    public function addItem(QuoteItem $item, $qty = 1)
     {
         if (!$this->canAddItem($item, $qty)) {
             return false;
@@ -75,12 +75,12 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @param Item $item
-     * @param int  $qty
+     * @param QuoteItem $item
+     * @param int       $qty
      *
      * @return bool
      */
-    public function canAddItem(Item $item, $qty = 1)
+    public function canAddItem(QuoteItem $item, $qty = 1)
     {
         $this->dimensionsExtractor->setProductByCartItem($item);
 
@@ -125,21 +125,21 @@ class Frenet_Shipping_Model_Packages_Package
     }
 
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return bool
      */
-    private function itemExists(Item $item)
+    private function itemExists(QuoteItem $item)
     {
         return isset($this->items[$item->getId()]);
     }
 
     /**
-     * @param Item $item
+     * @param QuoteItem $item
      *
      * @return float
      */
-    private function getItemQty(Item $item)
+    private function getItemQty(QuoteItem $item)
     {
         if ($this->itemExists($item)) {
             return (float) $this->getItemById($item->getId())->getQty();

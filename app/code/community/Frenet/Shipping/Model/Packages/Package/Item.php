@@ -7,12 +7,16 @@ use Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface as Attribu
  *
  * @package Frenet\Shipping\Model\Packages
  */
+use Mage_Catalog_Model_Product as Product;
+use Mage_Catalog_Model_Resource_Product as ProductResource;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
+
 class Frenet_Shipping_Model_Packages_Package_Item
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * @var Mage_Sales_Model_Quote_Item
+     * @var QuoteItem
      */
     private $cartItem;
 
@@ -22,12 +26,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     private $qty;
 
     /**
-     * @var bool
-     */
-    private $isInitialized = false;
-
-    /**
-     * @var Mage_Sales_Model_Quote_Item
+     * @var Frenet_Shipping_Model_Store_Management
      */
     private $storeManagement;
 
@@ -67,7 +66,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
     }
 
     /**
-     * @return Mage_Sales_Model_Quote_Item
+     * @return QuoteItem
      */
     public function getCartItem()
     {
@@ -75,11 +74,11 @@ class Frenet_Shipping_Model_Packages_Package_Item
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param QuoteItem $item
      *
      * @return $this
      */
-    public function setCartItem(Mage_Sales_Model_Quote_Item $item)
+    public function setCartItem(QuoteItem $item)
     {
         $this->cartItem = $item;
         return $this;
@@ -138,7 +137,8 @@ class Frenet_Shipping_Model_Packages_Package_Item
     /**
      * @param bool $useParentItemIfAvailable
      *
-     * @return bool|Mage_Catalog_Model_Product
+     * @return bool|Product
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function getProduct($useParentItemIfAvailable = false)
     {
@@ -148,7 +148,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
             return $this->getProduct($this->cartItem->getParentItem());
         }
 
-        /** @var Mage_Catalog_Model_Product $product */
+        /** @var Product $product */
         return $this->cartItem->getProduct();
     }
 
@@ -219,7 +219,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
      */
     public function isProductFragile()
     {
-        /** @var Mage_Catalog_Model_Product $product */
+        /** @var Product $product */
         $product = $this->getProduct();
 
         if ($product->hasData(AttributesMappingInterface::DEFAULT_ATTRIBUTE_FRAGILE)) {
@@ -227,7 +227,7 @@ class Frenet_Shipping_Model_Packages_Package_Item
         }
 
         try {
-            /** @var Mage_Catalog_Model_Resource_Product $resource */
+            /** @var ProductResource $resource */
             $resource = $this->productResourceFactory->create();
             $value = (bool) $resource->getAttributeRawValue(
                 $product->getId(),
@@ -237,9 +237,8 @@ class Frenet_Shipping_Model_Packages_Package_Item
 
             return (bool) $value;
         } catch (\Exception $e) {
+            return false;
         }
-
-        return false;
     }
 
     /**

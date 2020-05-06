@@ -1,5 +1,7 @@
 <?php
 
+use Mage_Shipping_Model_Rate_Request as RateRequest;
+
 /**
  * Class MultiQuoteValidator
  */
@@ -17,17 +19,26 @@ class Frenet_Shipping_Model_Quote_Multi_Quote_Validator
      */
     private $packageLimit;
 
+    /**
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
+     */
+    private $rateRequestProvider;
+
     public function __construct()
     {
         $this->config = $this->objects()->config();
         $this->packageLimit = $this->objects()->packageLimit();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
      * @inheritDoc
      */
-    public function canProcessMultiQuote(Mage_Shipping_Model_Rate_Request $rateRequest)
+    public function canProcessMultiQuote()
     {
+        /** @var RateRequest $rateRequest */
+        $rateRequest = $this->rateRequestProvider->getRateRequest();
+
         if (!$this->config->isMultiQuoteEnabled()) {
             return false;
         }

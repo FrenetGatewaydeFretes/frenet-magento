@@ -30,28 +30,31 @@ class Frenet_Shipping_Model_Packages_Package_Item_Distributor
      */
     private $itemQuantityCalculator;
 
+    /**
+     * @var Frenet_Shipping_Model_Rate_Request_Provider
+     */
+    private $rateRequestProvider;
+
     public function __construct() {
         $this->quoteItemValidator = $this->objects()->quoteItemValidator();
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
      * @return array
      */
-    public function distribute(RateRequest $rateRequest) : array
+    public function distribute()
     {
-        return (array) $this->getUnitItems($rateRequest);
+        return $this->getUnitItems();
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
      * @return array
      */
-    private function getUnitItems(RateRequest $rateRequest) : array
+    private function getUnitItems()
     {
+        $rateRequest = $this->rateRequestProvider->getRateRequest();
         $unitItems = [];
 
         /** @var QuoteItem $item */

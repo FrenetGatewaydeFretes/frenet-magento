@@ -275,11 +275,27 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
-     * @return Frenet_Shipping_Model_Rate_Request_Service
+     * @return Frenet_Shipping_Model_Rate_Request_Provider
      */
-    public function rateRequestService()
+    public function rateRequestProvider()
     {
         return $this->getInstance('rate_request_service');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Catalog_Product_View_QuoteInterface
+     */
+    public function productViewQuote()
+    {
+        return $this->getInstance('catalog_product_view_quote');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Catalog_Product_View_Rate_Request_Builder
+     */
+    public function productViewQuoteRateRequestBuilder()
+    {
+        return $this->getInstance('catalog_product_view_rate_request_builder');
     }
 
     /**

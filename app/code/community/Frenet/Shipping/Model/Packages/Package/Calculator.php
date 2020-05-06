@@ -11,6 +11,7 @@
  * Copyright (c) 2020.
  */
 
+use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 use Frenet_Shipping_Model_Packages_Package as Package;
 use Frenet_Shipping_Model_Packages_Package_Manager as PackageManager;
@@ -18,20 +19,14 @@ use Frenet_Shipping_Model_Packages_Package_Matching as PackageMatching;
 use Frenet_Shipping_Model_Packages_Package_Limit as PackageLimit;
 use Frenet_Shipping_Model_Packages_Package_Processor as PackageProcessor;
 use Frenet_Shipping_Model_Quote_Multi_Quote_Validator as MultiQuoteValidatorInterface;
+use Frenet_Shipping_Model_Rate_Request_Provider as RateRequestProvider;
 
+/**
+ * Class Frenet_Shipping_Model_Packages_Package_Calculator
+ */
 class Frenet_Shipping_Model_Packages_Package_Calculator
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
-
-    /**
-     * @var \Frenet\Command\Shipping\QuoteInterface
-     */
-    private $serviceQuote;
-
-    /**
-     * @var Mage_Shipping_Model_Rate_Request
-     */
-    private $rateRequest;
 
     /**
      * @var PackageManager
@@ -58,6 +53,11 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
      */
     private $packageProcessor;
 
+    /**
+     * @var RateRequestProvider
+     */
+    private $rateRequestProvider;
+
     public function __construct()
     {
         $this->packageManager = $this->objects()->packageManager();
@@ -65,16 +65,16 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
         $this->packageLimit = $this->objects()->packageLimit();
         $this->packageMatching = $this->objects()->packageMatching();
         $this->packageProcessor = $this->objects()->packageProcessor();
+        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
-     * @return RateRequest[]
+     * @return Service[]
      */
-    public function calculate(RateRequest $rateRequest)
+    public function calculate()
     {
-        $this->rateRequest = $rateRequest;
+        /** @var RateRequest $rateRequest */
+        $rateRequest = $this->rateRequestProvider->getRateRequest();
 
         /**
          * If the package is not overweight then we simply process all the package.
@@ -86,7 +86,7 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
         /**
          * If the multi quote is disabled, we remove the limit.
          */
-        if (!$this->multiQuoteValidator->canProcessMultiQuote($rateRequest)) {
+        if (!$this->multiQuoteValidator->canProcessMultiQuote()) {
             $this->packageLimit->removeLimit();
             return $this->processPackages();
         }
@@ -95,7 +95,7 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
          * Make a full call first because of the other companies that don't have weight limit like Correios.
          */
         $this->packageLimit->removeLimit();
-        $this->packageManager->process($this->rateRequest);
+        $this->packageManager->process();
         $this->packageManager->unsetCurrentPackage();
 
         /**
@@ -112,16 +112,16 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
     }
 
     /**
-     * @return array
+     * @return Service[]
      */
     private function processPackages()
     {
-        $this->packageManager->process($this->rateRequest);
+        $this->packageManager->process();
         $results = [];
 
         /** @var Package $package */
         foreach ($this->packageManager->getPackages() as $key => $package) {
-            /** @var array $services */
+            /** @var Service[] $services */
             $services = $this->packageProcessor->process($package);
 
             /**

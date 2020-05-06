@@ -12,25 +12,31 @@
  */
 
 use Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface as ProductExtractorInterface;
+use Mage_Catalog_Model_Product as Product;
+use Mage_Catalog_Model_Resource_Product as ProductResource;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 
+/**
+ * Class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
+ */
 class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements ProductExtractorInterface
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * @var Mage_Catalog_Model_Product
+     * @var Product
      */
     private $product;
 
     /**
-     * @var Mage_Sales_Model_Quote_Item
+     * @var QuoteItem
      */
     private $cartItem;
 
     /**
-     * @var Frenet_Shipping_Model_Factory_Product_Resource
+     * @var ProductResource
      */
-    private $productResourceFactory;
+    private $productResource;
 
     /**
      * @var Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface
@@ -44,7 +50,7 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
 
     public function __construct()
     {
-        $this->productResourceFactory = $this->objects()->productResourceFactory();
+        $this->productResource = Mage::getResourceSingleton('catalog/product');
         $this->attributesMapping = $this->objects()->productAttributesMapping();
         $this->config = $this->objects()->config();
     }
@@ -52,7 +58,7 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
     /**
      * {@inheritdoc}
      */
-    public function setProduct(Mage_Catalog_Model_Product $product)
+    public function setProduct(Product $product)
     {
         if ($this->validateProduct($product)) {
             $this->product = $product;
@@ -62,11 +68,11 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $cartItem
+     * @param QuoteItem $cartItem
      *
      * @return $this
      */
-    public function setProductByCartItem(Mage_Sales_Model_Quote_Item $cartItem)
+    public function setProductByCartItem(QuoteItem $cartItem)
     {
         $this->cartItem = $cartItem;
         $this->setProduct($this->cartItem->getProduct());
@@ -148,7 +154,7 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
             return $this->product->getData($key);
         }
 
-        $value = $this->productResourceFactory->create()->getAttributeRawValue(
+        $value = $this->productResource->getAttributeRawValue(
             $this->product->getId(),
             $key,
             $this->product->getStore()
@@ -158,11 +164,11 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
     }
 
     /**
-     * @param Mage_Catalog_Model_Product $product
+     * @param Product $product
      *
      * @return bool
      */
-    private function validateProduct(Mage_Catalog_Model_Product $product)
+    private function validateProduct(Product $product)
     {
         if (!$product->getId()) {
             return false;

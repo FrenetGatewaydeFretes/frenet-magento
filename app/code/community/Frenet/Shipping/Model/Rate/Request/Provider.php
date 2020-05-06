@@ -14,14 +14,22 @@
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 
 /**
- * Class Frenet_Shipping_Model_Rate_Request_Service
+ * Class Frenet_Shipping_Model_Rate_Request_Provider
  */
-class Frenet_Shipping_Model_Rate_Request_Service
+class Frenet_Shipping_Model_Rate_Request_Provider
 {
     /**
      * @var RateRequest
      */
     private $rateRequest;
+
+    /**
+     * @return RateRequest
+     */
+    public function createRateRequest()
+    {
+        return new RateRequest();
+    }
 
     /**
      * @param RateRequest $rateRequest
@@ -35,11 +43,16 @@ class Frenet_Shipping_Model_Rate_Request_Service
     }
 
     /**
-     * @return RateRequest|null
+     * @return RateRequest
+     * @throws Mage_Exception
      */
     public function getRateRequest()
     {
-        return $this->rateRequest;
+        if ($this->rateRequest) {
+            return $this->rateRequest;
+        }
+
+        throw new Mage_Exception('Rate Request is not set.');
     }
 
     /**
