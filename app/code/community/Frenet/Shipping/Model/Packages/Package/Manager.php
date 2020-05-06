@@ -2,6 +2,7 @@
 
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 use Frenet_Shipping_Model_Packages_Package as Package;
+use Mage_Sales_Model_Quote_Item as QuoteItem;
 
 class Frenet_Shipping_Model_Packages_Package_Manager
 {
@@ -10,7 +11,7 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     /**
      * @var Package
      */
-    private $currentPackage = null;
+    private $currentPackage;
 
     /**
      * @var Package[]
@@ -38,6 +39,11 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     private $packageLimit;
 
     /**
+     * @var Frenet_Shipping_Model_Packages_Package_Item_Distributor
+     */
+    private $packageItemDistributor;
+
+    /**
      * PackageManager constructor.
      */
     public function __construct()
@@ -46,6 +52,7 @@ class Frenet_Shipping_Model_Packages_Package_Manager
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
         $this->packageFactory = $this->objects()->packageFactory();
         $this->packageLimit = $this->objects()->packageLimit();
+        $this->packageItemDistributor = $this->objects()->packageItemDistributor();
     }
 
     /**
@@ -55,7 +62,13 @@ class Frenet_Shipping_Model_Packages_Package_Manager
      */
     public function process(RateRequest $rateRequest)
     {
-        $this->distribute($rateRequest);
+        $items = $this->packageItemDistributor->distribute($rateRequest);
+
+        /** @var QuoteItem $item */
+        foreach ($items as $item) {
+            $this->addItemToPackage($item);
+        }
+
         return $this;
     }
 
@@ -85,26 +98,11 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     }
 
     /**
-     * @param RateRequest $rateRequest
-     *
-     * @return $this
-     */
-    private function distribute(RateRequest $rateRequest)
-    {
-        /** @var Mage_Sales_Model_Quote_Item $item */
-        foreach ($this->getUnitItems($rateRequest) as $item) {
-            $this->addItemToPackage($item);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param QuoteItem $item
      *
      * @return bool
      */
-    private function addItemToPackage(Mage_Sales_Model_Quote_Item $item)
+    private function addItemToPackage(QuoteItem $item)
     {
         if (!$this->getPackage()->canAddItem($item, 1)) {
             $this->useNewPackage();
@@ -149,30 +147,5 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     private function createPackage()
     {
         return $this->packageFactory->create();
-    }
-
-    /**
-     * @param RateRequest $rateRequest
-     *
-     * @return array
-     */
-    private function getUnitItems(RateRequest $rateRequest)
-    {
-        $unitItems = [];
-
-        /** @var Mage_Sales_Model_Quote_Item $item */
-        foreach ($rateRequest->getAllItems() as $item) {
-            if (!$this->quoteItemValidator->validate($item)) {
-                continue;
-            }
-
-            $qty = $this->itemQuantityCalculator->calculate($item);
-
-            for ($i = 1; $i <= $qty; $i++) {
-                $unitItems[] = $item;
-            }
-        }
-
-        return $unitItems;
     }
 }

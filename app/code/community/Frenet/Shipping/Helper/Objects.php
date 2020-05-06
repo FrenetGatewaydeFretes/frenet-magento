@@ -51,6 +51,14 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Quote_Coupon_Processor
+     */
+    public function quoteCouponProcessor()
+    {
+        return $this->getInstance('quote_coupon_processor');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_Quote_Multi_Quote_Validator
      */
     public function quoteMultiQuoteValidator()
@@ -80,6 +88,14 @@ class Frenet_Shipping_Helper_Objects
     public function quoteItemPriceCalculator()
     {
         return $this->getInstance('quote_item_price_calculator');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Quote_Item_Price_Calculator_Factory
+     */
+    public function quoteItemPriceCalculatorFactory()
+    {
+        return $this->getInstance('quote_item_price_calculator_factory');
     }
 
     /**
@@ -187,6 +203,14 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Packages_Package_Processor
+     */
+    public function packageProcessor()
+    {
+        return $this->getInstance('packages_package_processor');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_Packages_Package_Item
      */
     public function packageItem()
@@ -200,6 +224,14 @@ class Frenet_Shipping_Helper_Objects
     public function packageItemFactory()
     {
         return $this->getInstance('packages_package_item_factory');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Packages_Package_Item_Distributor
+     */
+    public function packageItemDistributor()
+    {
+        return $this->getInstance('packages_package_item_distributor');
     }
 
     /**
@@ -240,6 +272,14 @@ class Frenet_Shipping_Helper_Objects
     public function deliveryTimeCalculator()
     {
         return $this->getInstance('delivery_time_calculator');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Rate_Request_Service
+     */
+    public function rateRequestService()
+    {
+        return $this->getInstance('rate_request_service');
     }
 
     /**

@@ -62,6 +62,11 @@ class Frenet_Shipping_Model_Cache_Manager
      */
     private $postcodeNormalizer;
 
+    /**
+     * @var Frenet_Shipping_Model_Quote_Coupon_Processor
+     */
+    private $couponProcessor;
+
     public function __construct()
     {
         $this->serializer = $this->objects()->serializer();
@@ -69,6 +74,7 @@ class Frenet_Shipping_Model_Cache_Manager
         $this->config = $this->objects()->config();
         $this->quoteItemValidator = $this->objects()->quoteItemValidator();
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->couponProcessor = $this->objects()->quoteCouponProcessor();
         $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
     }
 
@@ -178,6 +184,7 @@ class Frenet_Shipping_Model_Cache_Manager
             $this->postcodeNormalizer->format($origPostcode),
             $this->postcodeNormalizer->format($destPostcode),
             $items,
+            $this->couponProcessor->getCouponCode(),
             $this->config->isMultiQuoteEnabled() ? 'multi' : null
         ]);
 

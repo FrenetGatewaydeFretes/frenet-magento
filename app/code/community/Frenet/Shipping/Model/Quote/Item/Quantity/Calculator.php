@@ -1,17 +1,28 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Mage_Sales_Model_Quote_Item as Item;
+use Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface as ItemQuantityCalculatorInterface;
 
 /**
  * Class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
  */
-class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
-    implements Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
+class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator implements ItemQuantityCalculatorInterface
 {
     /**
      * @param Item $item
      *
-     * @return integer
+     * @return float
      */
     public function calculate(Item $item)
     {
@@ -41,38 +52,38 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
                 $qty = $this->calculateSimpleProduct($item);
         }
 
-        return (int) max(1, $qty);
+        return (float) max(1, $qty);
     }
 
     /**
      * @param Item $item
      *
-     * @return float|int|mixed
+     * @return float
      */
     private function calculateSimpleProduct(Item $item)
     {
-        return $item->getQty();
+        return (float) $item->getQty();
     }
 
     /**
      * @param Item $item
      *
-     * @return float|int|mixed
+     * @return float
      */
     private function calculateBundleProduct(Item $item)
     {
         $bundleQty = (float) $item->getParentItem()->getQty();
-        return $item->getQty() * $bundleQty;
+        return (float) $item->getQty() * $bundleQty;
     }
 
     /**
      * @param Item $item
      *
-     * @return float|int|mixed
+     * @return float
      */
     private function calculateGroupedProduct(Item $item)
     {
-        return $item->getQty();
+        return (float) $item->getQty();
     }
 
     /**
@@ -80,11 +91,10 @@ class Frenet_Shipping_Model_Quote_Item_Quantity_Calculator
      *
      * @param Item $item
      *
-     * @return float|int|mixed
+     * @return float
      */
     private function calculateConfigurableProduct(Item $item)
     {
-        $qty = $item->getParentItemId() ? $item->getParentItem()->getQty() : $item->getQty();
-        return $qty;
+        return (float) $item->getParentItem()->getQty();
     }
 }

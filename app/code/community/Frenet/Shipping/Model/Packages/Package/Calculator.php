@@ -1,12 +1,23 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 use Frenet_Shipping_Model_Packages_Package as Package;
-use Frenet_Shipping_Model_Packages_Package_item as PackageItem;
 use Frenet_Shipping_Model_Packages_Package_Manager as PackageManager;
 use Frenet_Shipping_Model_Packages_Package_Matching as PackageMatching;
 use Frenet_Shipping_Model_Packages_Package_Limit as PackageLimit;
-use Frenet\Command\Shipping\QuoteInterface;
+use Frenet_Shipping_Model_Packages_Package_Processor as PackageProcessor;
+use Frenet_Shipping_Model_Quote_Multi_Quote_Validator as MultiQuoteValidatorInterface;
 
 class Frenet_Shipping_Model_Packages_Package_Calculator
 {
@@ -23,34 +34,14 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
     private $rateRequest;
 
     /**
-     * @var Frenet_Shipping_Model_Quote_Item_Validator
-     */
-    private $quoteItemValidator;
-
-    /**
      * @var PackageManager
      */
     private $packageManager;
 
     /**
-     * @var Frenet_Shipping_Model_Service_Api
-     */
-    private $apiService;
-
-    /**
-     * @var Frenet_Shipping_Model_Config
-     */
-    private $config;
-
-    /**
-     * @var Frenet_Shipping_Model_Quote_Multi_Quote_Validator
+     * @var MultiQuoteValidatorInterface
      */
     private $multiQuoteValidator;
-
-    /**
-     * @var Mage_Checkout_Model_Session
-     */
-    private $checkoutSession;
 
     /**
      * @var PackageLimit
@@ -62,16 +53,18 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
      */
     private $packageMatching;
 
+    /**
+     * @var PackageProcessor
+     */
+    private $packageProcessor;
+
     public function __construct()
     {
-        $this->checkoutSession = Mage::getSingleton('checkout/session');
-        $this->quoteItemValidator = $this->objects()->quoteItemValidator();
         $this->packageManager = $this->objects()->packageManager();
-        $this->apiService = $this->objects()->apiService();
-        $this->config = $this->objects()->config();
         $this->multiQuoteValidator = $this->objects()->quoteMultiQuoteValidator();
         $this->packageLimit = $this->objects()->packageLimit();
         $this->packageMatching = $this->objects()->packageMatching();
+        $this->packageProcessor = $this->objects()->packageProcessor();
     }
 
     /**
@@ -83,6 +76,9 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
     {
         $this->rateRequest = $rateRequest;
 
+        /**
+         * If the package is not overweight then we simply process all the package.
+         */
         if (!$this->packageLimit->isOverWeight((float) $rateRequest->getPackageWeight())) {
             return $this->processPackages();
         }
@@ -126,7 +122,7 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
         /** @var Package $package */
         foreach ($this->packageManager->getPackages() as $key => $package) {
             /** @var array $services */
-            $services = $this->processPackage($package);
+            $services = $this->packageProcessor->process($package);
 
             /**
              * If there's only one package then we can simply return the services quote.
@@ -142,95 +138,5 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
         }
 
         return $results;
-    }
-
-    /**
-     * @param Package $package
-     *
-     * @return array|bool
-     */
-    private function processPackage(Package $package)
-    {
-        $this->initServiceQuote($this->rateRequest);
-        $this->serviceQuote->setShipmentInvoiceValue($package->getTotalPrice());
-
-        /** @var PackageItem $packageItem */
-        foreach ($package->getItems() as $packageItem) {
-            if (!$this->quoteItemValidator->validate($packageItem->getCartItem())) {
-                continue;
-            }
-
-            $this->addPackageItemToQuote($packageItem);
-        }
-
-        return $this->callService();
-    }
-
-    /**
-     * @return array|bool
-     */
-    private function callService()
-    {
-        /** @var \Frenet\ObjectType\Entity\Shipping\Quote $result */
-        $result = $this->serviceQuote->execute();
-        $services = $result->getShippingServices();
-
-        if ($services) {
-            return $services;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param RateRequest $rateRequest
-     *
-     * @return $this
-     */
-    private function initServiceQuote(RateRequest $rateRequest)
-    {
-        /** @var \Frenet\Command\Shipping\QuoteInterface $quote */
-        $this->serviceQuote = $this->apiService->shipping()->quote();
-        $this->serviceQuote->setSellerPostcode($this->config->getOriginPostcode())
-            ->setRecipientPostcode($rateRequest->getDestPostcode())
-            ->setRecipientCountry($rateRequest->getCountryId());
-
-        /**
-         * Add coupon code if exists.
-         */
-        if ($this->getQuoteCouponCode()) {
-            $this->serviceQuote->setCouponCode($this->getQuoteCouponCode());
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param PackageItem $packageItem
-     *
-     * @return $this
-     */
-    private function addPackageItemToQuote(PackageItem $packageItem)
-    {
-        $this->serviceQuote->addShippingItem(
-            $packageItem->getSku(),
-            $packageItem->getQty(),
-            $packageItem->getWeight(),
-            $packageItem->getLength(),
-            $packageItem->getHeight(),
-            $packageItem->getWidth(),
-            $packageItem->getProductCategories(),
-            $packageItem->isProductFragile()
-        );
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    private function getQuoteCouponCode()
-    {
-        return $this->checkoutSession->getQuote()->getCouponCode();
     }
 }

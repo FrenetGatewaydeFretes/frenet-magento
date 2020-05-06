@@ -10,13 +10,13 @@
  *
  * Copyright (c) 2020.
  */
-
 use Mage_Sales_Model_Quote_Item as QuoteItem;
+use Frenet_Shipping_Model_Quote_Item_Price_CalculatorInterface as PriceCalculatorInterface;
 
 /**
- * Class Frenet_Shipping_Model_Quote_Item_Price_Calculator
+ * Class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Default
  */
-class Frenet_Shipping_Model_Quote_Item_Price_Calculator
+class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Default implements PriceCalculatorInterface
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 
@@ -25,34 +25,24 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator
      */
     private $itemQuantityCalculator;
 
-    /**
-     * @var PriceCalculatorFactory
-     */
-    private $priceCalculatorFactory;
-
     public function __construct()
     {
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
-        $this->priceCalculatorFactory = $this->objects()->quoteItemPriceCalculatorFactory();
     }
 
     /**
-     * @param QuoteItem $item
-     *
-     * @return float
+     * @inheritDoc
      */
     public function getPrice(QuoteItem $item)
     {
-        return $this->priceCalculatorFactory->create($item)->getPrice($item);
+        return $item->getPrice();
     }
 
     /**
-     * @param QuoteItem $item
-     *
-     * @return float
+     * @inheritDoc
      */
     public function getFinalPrice(QuoteItem $item)
     {
-        return $this->priceCalculatorFactory->create($item)->getFinalPrice($item);
+        return $item->getRowTotal() / $this->itemQuantityCalculator->calculate($item);
     }
 }

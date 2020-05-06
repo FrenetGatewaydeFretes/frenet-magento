@@ -80,6 +80,11 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
      */
     private $postcodeValidator;
 
+    /**
+     * @var Frenet_Shipping_Model_Rate_Request_Service
+     */
+    private $rateRequestService;
+
     public function __construct()
     {
         parent::__construct();
@@ -93,6 +98,7 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
         $this->deliveryTimeCalculator = $this->objects()->deliveryTimeCalculator();
         $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
         $this->postcodeValidator = $this->objects()->postcodeValidator();
+        $this->rateRequestService = $this->objects()->rateRequestService();
     }
 
     /**
@@ -109,13 +115,18 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
             return $errorMessage;
         }
 
+        /** This service will be used all the way long. */
+        $this->rateRequestService->setRateRequest($request);
+
         /** @var array $results */
         if (!$results = $this->calculator->getQuote($request)) {
+            $this->rateRequestService->clear();
             return $this->result;
         }
 
         $this->prepareResult($request, $results);
 
+        $this->rateRequestService->clear();
         return $this->result;
     }
 
