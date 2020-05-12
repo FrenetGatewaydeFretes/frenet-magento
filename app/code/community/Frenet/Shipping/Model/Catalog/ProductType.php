@@ -13,7 +13,7 @@
  */
 
 use Mage_Catalog_Model_Product as ProductInterface;
-use Mage_Catalog_Model_Product_Type as Type;
+use Mage_Catalog_Model_Product_Type as DefaultType;
 use Mage_Downloadable_Model_Product_Type as Downloadable;
 
 /**
@@ -24,27 +24,27 @@ class Frenet_Shipping_Model_Catalog_ProductType
     /**
      * @var string
      */
-    const TYPE_SIMPLE = Type::TYPE_SIMPLE;
+    const TYPE_SIMPLE = DefaultType::TYPE_SIMPLE;
 
     /**
      * @var string
      */
-    const TYPE_VIRTUAL = Type::TYPE_VIRTUAL;
+    const TYPE_VIRTUAL = DefaultType::TYPE_VIRTUAL;
 
     /**
      * @var string
      */
-    const TYPE_CONFIGURABLE = Type::TYPE_CONFIGURABLE;
+    const TYPE_CONFIGURABLE = DefaultType::TYPE_CONFIGURABLE;
 
     /**
      * @var string
      */
-    const TYPE_BUNDLE = Type::TYPE_BUNDLE;
+    const TYPE_BUNDLE = DefaultType::TYPE_BUNDLE;
 
     /**
      * @var string
      */
-    const TYPE_GROUPED = Type::TYPE_GROUPED;
+    const TYPE_GROUPED = DefaultType::TYPE_GROUPED;
 
     /**
      * @var string
@@ -68,7 +68,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeSimple(ProductInterface $product) : bool
+    public function isTypeSimple(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_SIMPLE);
     }
@@ -78,7 +78,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeVirtual(ProductInterface $product) : bool
+    public function isTypeVirtual(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_VIRTUAL);
     }
@@ -88,7 +88,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeConfigurable(ProductInterface $product) : bool
+    public function isTypeConfigurable(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_CONFIGURABLE);
     }
@@ -98,7 +98,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeBundle(ProductInterface $product) : bool
+    public function isTypeBundle(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_BUNDLE);
     }
@@ -108,7 +108,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeGrouped(ProductInterface $product) : bool
+    public function isTypeGrouped(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_GROUPED);
     }
@@ -118,7 +118,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    public function isTypeDownloadable(ProductInterface $product) : bool
+    public function isTypeDownloadable(ProductInterface $product)
     {
         return $this->isType($product, self::TYPE_DOWNLOADABLE);
     }
@@ -129,7 +129,7 @@ class Frenet_Shipping_Model_Catalog_ProductType
      *
      * @return bool
      */
-    private function isType(ProductInterface $product, string $typeId) : bool
+    private function isType(ProductInterface $product, $typeId)
     {
         return $product->getTypeId() === $typeId;
     }

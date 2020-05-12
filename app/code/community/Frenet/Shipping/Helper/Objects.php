@@ -279,7 +279,7 @@ class Frenet_Shipping_Helper_Objects
      */
     public function rateRequestProvider()
     {
-        return $this->getInstance('rate_request_service');
+        return $this->getInstance('rate_request_provider');
     }
 
     /**

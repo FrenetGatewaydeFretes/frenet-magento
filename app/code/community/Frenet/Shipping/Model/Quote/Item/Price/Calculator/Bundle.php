@@ -19,6 +19,8 @@ use Mage_Sales_Model_Quote_Item as QuoteItem;
  *  */
 class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle implements PriceCalculatorInterface
 {
+    use Frenet_Shipping_Helper_ObjectsTrait;
+
     /**
      * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
      */

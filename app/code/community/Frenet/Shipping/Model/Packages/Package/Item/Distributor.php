@@ -35,7 +35,8 @@ class Frenet_Shipping_Model_Packages_Package_Item_Distributor
      */
     private $rateRequestProvider;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->quoteItemValidator = $this->objects()->quoteItemValidator();
         $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
         $this->rateRequestProvider = $this->objects()->rateRequestProvider();
