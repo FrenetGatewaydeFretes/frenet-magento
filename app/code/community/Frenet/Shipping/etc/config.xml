@@ -53,6 +53,15 @@
                 </frenet_shipping>
             </modules>
         </translate>
+        <routers>
+            <frenet_shipping>
+                <use>standard</use>
+                <args>
+                    <module>Frenet_Shipping</module>
+                    <frontName>frenet</frontName>
+                </args>
+            </frenet_shipping>
+        </routers>
     </frontend>
     <adminhtml>
         <translate>
