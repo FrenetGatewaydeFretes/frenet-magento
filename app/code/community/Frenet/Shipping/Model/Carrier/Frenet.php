@@ -193,13 +193,14 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
 
         if (!empty($this->errors)) {
             /** @var Mage_Shipping_Model_Rate_Result_Error $error */
-            $error = $this->_rateErrorFactory->create([
+            $error = Mage::getModel('shipping/rate_result_error');
+            $data  = [
                 'carrier'       => $this->_code,
                 'carrier_title' => $this->config->getCarrierConfig('title'),
                 'error_message' => implode(', ', $this->errors)
-            ]);
-
-            $this->debugErrors($error);
+            ];
+            $error->setData($data);
+            $this->debug($data);
 
             return $error;
         }
