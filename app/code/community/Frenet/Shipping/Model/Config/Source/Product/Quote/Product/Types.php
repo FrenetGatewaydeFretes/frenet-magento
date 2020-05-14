@@ -15,16 +15,24 @@
 use Frenet_Shipping_Model_Catalog_ProductType as ProductType;
 
 /**
- * Class ProductTypes
- *
- * @package Frenet\Shipping\Model\Config\Source\Catalog\Product\Quote
+ * Class Frenet_Shipping_Model_Config_Source_Product_Quote_Product_Types
  */
-class Frenet_Shipping_Model_Config_Source_Catalog_Product_Quote_ProductTypes
+class Frenet_Shipping_Model_Config_Source_Product_Quote_Product_Types
 {
     /**
      * @var array
      */
     private $options = [];
+
+    /**
+     * @var Frenet_Shipping_Helper_Data
+     */
+    private $helper;
+
+    public function __construct()
+    {
+        $this->helper = Mage::helper('frenet_shipping');
+    }
 
     /**
      * Return array of options as value-label pairs
@@ -53,10 +61,10 @@ class Frenet_Shipping_Model_Config_Source_Catalog_Product_Quote_ProductTypes
     public function toArray()
     {
         $this->options = [
-            ProductType::TYPE_SIMPLE       => Mage::helper('frenet_shipping')->__('Simple Products'),
-            ProductType::TYPE_CONFIGURABLE => Mage::helper('frenet_shipping')->__('Configurable Products'),
-            ProductType::TYPE_BUNDLE       => Mage::helper('frenet_shipping')->__('Bundle Products'),
-            ProductType::TYPE_GROUPED      => Mage::helper('frenet_shipping')->__('Grouped Products'),
+            ProductType::TYPE_SIMPLE       => $this->helper->__('Simple Products'),
+            ProductType::TYPE_CONFIGURABLE => $this->helper->__('Configurable Products'),
+            ProductType::TYPE_BUNDLE       => $this->helper->__('Bundle Products'),
+            ProductType::TYPE_GROUPED      => $this->helper->__('Grouped Products'),
         ];
 
         return $this->options;

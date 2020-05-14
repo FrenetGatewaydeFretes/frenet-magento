@@ -53,6 +53,13 @@
                 </frenet_shipping>
             </modules>
         </translate>
+        <layout>
+            <updates>
+                <frenet_shipping>
+                    <file>frenet/frenet_shipping.xml</file>
+                </frenet_shipping>
+            </updates>
+        </layout>
         <routers>
             <frenet_shipping>
                 <use>standard</use>
@@ -111,6 +118,10 @@
                 <default_measurements_default_height>2</default_measurements_default_height>
                 <default_measurements_default_length>16</default_measurements_default_length>
                 <default_measurements_default_width>11</default_measurements_default_width>
+
+                <!-- PRODUCT QUOTE -->
+                <product_quote_enabled>1</product_quote_enabled>
+                <product_quote_product_types>simple,configurable,bundle,grouped</product_quote_product_types>
 
                 <!-- DEBUG -->
                 <debug>0</debug>

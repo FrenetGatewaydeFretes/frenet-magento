@@ -15,7 +15,7 @@
 /**
  * Class Frenet_Shipping_Block_Catalog_Product_View_Quote
  */
-class Frenet_Shipping_Block_Catalog_Product_View_Quote extends Mage_Core_Block_Template
+class Frenet_Shipping_Block_Catalog_Product_View_Quote extends Mage_Catalog_Block_Product_View
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
 

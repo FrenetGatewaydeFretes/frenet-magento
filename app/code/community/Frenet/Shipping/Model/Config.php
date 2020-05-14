@@ -166,6 +166,41 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
+     * @return bool
+     */
+    public function isProductQuoteEnabled($store = null)
+    {
+        return (bool) $this->getCarrierConfig('product_quote_enabled', $store);
+    }
+
+    /**
+     * @param string $productTypeId
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
+     * @return bool
+     */
+    public function isProductQuoteAllowed($productTypeId, $store = null)
+    {
+        $allowedTypes = $this->getProductQuoteProductTypes($store);
+        return in_array($productTypeId, $allowedTypes);
+    }
+
+    /**
+     * @param null|string|int|Mage_Core_Model_Store $store
+     *
+     * @return array
+     */
+    public function getProductQuoteProductTypes($store = null)
+    {
+        return explode(
+            ',',
+            $this->getCarrierConfig('product_quote_product_types', $store)
+        );
+    }
+
+    /**
      * @param string|int|Mage_Core_Model_Store $store
      *
      * @return string

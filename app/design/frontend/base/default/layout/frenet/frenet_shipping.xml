@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <frenet_product_shipping_quote>
+        <block type="frenet_shipping/catalog_product_view_quote" name="product.info.frenet.shipping.quote" as="frenet.shipping.quote" template="frenet/shipping/catalog/product/view/quote.phtml">
+        </block>
+        <reference name="product.info.extrahint">
+            <action method="append">
+                <block>product.info.frenet.shipping.quote</block>
+            </action>
+        </reference>
+    </frenet_product_shipping_quote>
+
+    <!-- Simple Products -->
+    <PRODUCT_TYPE_simple>
+        <update handle="frenet_product_shipping_quote" />
+    </PRODUCT_TYPE_simple>
+
+    <!-- Configurable Products -->
+    <PRODUCT_TYPE_configurable>
+        <update handle="frenet_product_shipping_quote" />
+    </PRODUCT_TYPE_configurable>
+
+    <!-- Bundle Products -->
+    <PRODUCT_TYPE_bundle>
+        <update handle="frenet_product_shipping_quote" />
+    </PRODUCT_TYPE_bundle>
+
+    <!-- Grouped Products -->
+    <PRODUCT_TYPE_grouped>
+        <update handle="frenet_product_shipping_quote" />
+    </PRODUCT_TYPE_grouped>
+</layout>

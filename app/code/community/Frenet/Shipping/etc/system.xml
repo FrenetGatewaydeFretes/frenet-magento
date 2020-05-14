@@ -188,6 +188,35 @@
                             </depends>
                         </default_measurements_default_width>
 
+                        <!-- PRODUCT QUOTE OPTIONS -->
+                        <product_quote_enabled translate="label">
+                            <label>Product Quote Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>220</sort_order>
+                            <comment><![CDATA[If enabled the product shipping quote will be possible from product page.]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </product_quote_enabled>
+                        <product_quote_product_types translate="label">
+                            <label>Product Quote Enable for Product Types</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>frenet_shipping/config_source_product_quote_product_types</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>230</sort_order>
+                            <comment><![CDATA[These are the product types allowed to be quote in the product page.]]></comment>
+                            <depends>
+                                <product_quote_enabled>1</product_quote_enabled>
+                                <active>1</active>
+                            </depends>
+                        </product_quote_product_types>
+
                         <!-- ADDITIONAL LEAD TIME -->
                         <additional_lead_time translate="label">
                             <label>Additional Lead Time</label>
