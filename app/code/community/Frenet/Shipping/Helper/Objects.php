@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class Frenet_Shipping_Helper_Objects
  */

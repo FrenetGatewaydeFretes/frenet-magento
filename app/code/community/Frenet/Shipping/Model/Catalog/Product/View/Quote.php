@@ -10,6 +10,8 @@
  *
  * Copyright (c) 2020.
  */
+Frenet_Shipping_Model_DependencyFinder::includeDependency();
+
 use Mage_Catalog_Model_Product as Product;
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 use Frenet_Shipping_Model_Rate_Request_Provider as RateRequestProvider;
@@ -53,10 +55,18 @@ class Frenet_Shipping_Model_Catalog_Product_View_Quote implements QuoteInterface
     public function quoteByProductId($productId, $postcode, $qty = 1, array $options = [])
     {
         try {
+            if (!$postcode) {
+                Mage::throwException('Postcode cannot be empty.');
+            }
+
             /** @var Product $product */
             $product = Mage::getModel('catalog/product')->load($productId);
+
+            if (!$product || !$product->getId()) {
+                Mage::throwException("Product ID '{$productId}' does not exist.");
+            }
         } catch (Exception $exception) {
-            Mage::log('Product ID %s does not exist.', $productId);
+            Mage::log($exception->getMessage());
 
             return [];
         }
@@ -84,7 +94,7 @@ class Frenet_Shipping_Model_Catalog_Product_View_Quote implements QuoteInterface
     /**
      * @inheritDoc
      */
-    private function quote(Product $product, string $postcode, int $qty = 1, $options = [])
+    private function quote(Product $product, $postcode, $qty = 1, $options = [])
     {
         /** @var RateRequest $rateRequest */
         $rateRequest = $this->rateRequestBuilder->build($product, $postcode, $qty, $options);

@@ -110,7 +110,7 @@ class Frenet_Shipping_Model_Catalog_Product_View_Rate_Request_Builder
      *
      * @return float
      */
-    private function getItemRowWeight(QuoteItem $item, $qty) : float
+    private function getItemRowWeight(QuoteItem $item, $qty)
     {
         $this->dimensionsExtractor->setProductByCartItem($item);
         $weight = $this->dimensionsExtractor->getWeight();

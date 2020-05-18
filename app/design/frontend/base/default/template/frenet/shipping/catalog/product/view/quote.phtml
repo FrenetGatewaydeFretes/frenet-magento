@@ -49,7 +49,7 @@ $product = $this->getProduct();
                 </div>
             </div>
             <div class="actions">
-                <button type="button" class="button btn-cart">
+                <button type="button" id="frenet-postcode-button" class="button btn-cart">
                     <span><?php echo $this->__('Get Quote')?></span>
                 </button>
             </div>
@@ -91,4 +91,58 @@ $product = $this->getProduct();
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        var productQuote = Class.create();
+        productQuote.prototype = {
+            initialize: function () {
+                this.url = '/frenet/product/quote';
+                this.postcode = null;
+                this.active = false;
+                this.field = $('frenet-postcode-field');
+                this.button = $('frenet-postcode-button');
+
+                // this.field.observe('change', this.updateRates.bind(this));
+                this.button.observe('click', this.updateRates.bind(this));
+            },
+            updateRates: function () {
+                this.postcode = this.field.value;
+                if (this.postcode) {
+                    // this.loaderStart();
+
+                    new Ajax.Request(this.url, {
+                        method: 'POST',
+                        parameters: $('product_addtocart_form').serialize(),
+                        onSuccess: this.processSuccess.bind(this),
+                        onFailure: this.processFailure.bind(this),
+                        onComplete: this.processAlways.bind(this)
+                    });
+                }
+
+                // if (!this.postcode()) {
+                //     this.reset();
+                // }
+            },
+            processSuccess: function (result) {
+                console.log("RESULT SUCCESS", result);
+                // if (result.error) {
+                //     this.processFailure(result);
+                //     return;
+                // }
+
+                // this.pushRates(result.rates);
+            },
+            processFailure: function (result) {
+                console.log("RESULT FAILURE", result);
+                // this.reset();
+                // this.errorMessage(result.message);
+                // this.error(true);
+            },
+            processAlways: function (result) {
+                console.log("RESULT ALWAYS", result);
+                // this.loaderStop();
+            },
+        }
+
+        var quote = new productQuote();
+    </script>
 <?php endif; ?>
