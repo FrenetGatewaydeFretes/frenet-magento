@@ -20,14 +20,7 @@ $product = $this->getProduct();
 ?>
 
 <?php if ($product->isSaleable()) :?>
-<!--    <script type="text/x-magento-init">-->
-<!--    {-->
-<!--        "*": {-->
-<!--            "Magento_Ui/js/core/app": --><?//= $block->getJsLayout() ?>
-<!--        }-->
-<!--    }-->
-<!--    </script>-->
-    <div class="box-frenet-quote" data-bind="scope: 'frenet-quote'">
+    <div class="box-frenet-quote">
         <div class="fieldset">
             <h2><?php echo $this->__('Shipping Quote')?></h2>
             <p><?php echo $this->__('Calculate the shipping quote for this product with Frenet.')?></p>
@@ -42,8 +35,7 @@ $product = $this->getProduct();
                            min="0"
                            value=""
                            maxlength="9"
-                           class="input-text postcode"
-                           data-validate="required: true"
+                           class="input-text postcode required"
                            data-bind="value: postcode, event: {change: activate}, attr: {title: fieldTitle}"
                     />
                 </div>
@@ -60,89 +52,29 @@ $product = $this->getProduct();
                 <div data-bind="visible: displayNoResults">
                     <span data-bind="text: noResultsMessage"></span>
                 </div>
-                <table data-bind="visible: visible" class="data table">
+                <table id="frenet-result-table" class="data-table" style="display: none;">
                     <col width="60%">
-                    <col width="10%">
-                    <col width="10%">
+                    <col width="20%">
+                    <col width="20%">
                     <thead>
                     <tr>
-                        <th data-bind="i18n: 'Description'"></th>
-                        <th data-bind="i18n: 'Time'"></th>
-                        <th data-bind="i18n: 'Price'"></th>
+                        <th><?php echo $this->__('Description') ?></th>
+                        <th><?php echo $this->__('Delivery Time') ?></th>
+                        <th><?php echo $this->__('Price') ?></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <!-- ko foreach: rates -->
-                    <tr>
-                        <td data-bind="text: service_description"></td>
-                        <td data-bind="text: delivery_time"></td>
-                        <td data-bind="text: shipping_price"></td>
-                    </tr>
-                    <tr data-bind="visible: message" class="footer">
-                        <td colspan="4">
-                            <small class="note" data-bind="text: message"></small>
-                        </td>
-                    </tr>
-                    <!-- /ko -->
+                    <tbody id="frenet-result-table-body">
                     </tbody>
                 </table>
             </div>
-            <div id="frenet-loader" data-mage-init='{"loader": {}}'>
+            <div id="frenet-loader">
             </div>
         </div>
     </div>
     <script type="text/javascript">
-        var productQuote = Class.create();
-        productQuote.prototype = {
-            initialize: function () {
-                this.url = '/frenet/product/quote';
-                this.postcode = null;
-                this.active = false;
-                this.field = $('frenet-postcode-field');
-                this.button = $('frenet-postcode-button');
-
-                // this.field.observe('change', this.updateRates.bind(this));
-                this.button.observe('click', this.updateRates.bind(this));
-            },
-            updateRates: function () {
-                this.postcode = this.field.value;
-                if (this.postcode) {
-                    // this.loaderStart();
-
-                    new Ajax.Request(this.url, {
-                        method: 'POST',
-                        parameters: $('product_addtocart_form').serialize(),
-                        onSuccess: this.processSuccess.bind(this),
-                        onFailure: this.processFailure.bind(this),
-                        onComplete: this.processAlways.bind(this)
-                    });
-                }
-
-                // if (!this.postcode()) {
-                //     this.reset();
-                // }
-            },
-            processSuccess: function (result) {
-                console.log("RESULT SUCCESS", result);
-                // if (result.error) {
-                //     this.processFailure(result);
-                //     return;
-                // }
-
-                // this.pushRates(result.rates);
-            },
-            processFailure: function (result) {
-                console.log("RESULT FAILURE", result);
-                // this.reset();
-                // this.errorMessage(result.message);
-                // this.error(true);
-            },
-            processAlways: function (result) {
-                console.log("RESULT ALWAYS", result);
-                // this.loaderStop();
-            },
-        }
-
-        var quote = new productQuote();
+        var config = {
+            priceFormat: JSON.parse('<?php echo json_encode(Mage::app()->getLocale()->getJsPriceFormat()) ?>')
+        };
+        var quote = new ProductQuote(config);
     </script>
 <?php endif; ?>

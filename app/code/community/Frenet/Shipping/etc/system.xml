@@ -1,4 +1,17 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
+-->
 <config>
     <sections>
         <carriers>

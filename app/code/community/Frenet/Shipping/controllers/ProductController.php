@@ -16,10 +16,10 @@ class Frenet_Shipping_ProductController extends Frenet_Shipping_Controller_Front
 
     public function quoteAction()
     {
-        $productId = (int) $this->getRequest()->getPost('product');
-        $postcode = (string) $this->getRequest()->getPost('postcode');
-        $qty = (float) $this->getRequest()->getPost('qty');
-        $options = (array) $this->getRequest()->getPost();
+        $productId = (int)    $this->getRequest()->getPost('product');
+        $postcode  = (string) $this->getRequest()->getPost('postcode');
+        $qty       = (float)  $this->getRequest()->getPost('qty');
+        $options   = (array)  $this->getRequest()->getPost();
 
         $this->getResponse()->setHeader('Content-type', 'application/json', true);
 

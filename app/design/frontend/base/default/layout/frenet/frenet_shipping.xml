@@ -1,6 +1,24 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
+-->
 <layout version="0.1.0">
     <frenet_product_shipping_quote>
+        <reference name="head">
+            <action method="addJs"><script>varien/js.js</script></action>
+            <action method="addItem"><type>skin_js</type><name>js/frenet/shipping.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/frenet/shipping.css</name></action>
+        </reference>
         <block type="frenet_shipping/catalog_product_view_quote" name="product.info.frenet.shipping.quote" as="frenet.shipping.quote" template="frenet/shipping/catalog/product/view/quote.phtml">
         </block>
         <reference name="product.info.extrahint">

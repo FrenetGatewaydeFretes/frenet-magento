@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<jstranslator>
+    <delivery-time translate="message" module="frenet_shipping">
+        <message> day(s)</message>
+    </delivery-time>
+</jstranslator>
