@@ -10,6 +10,14 @@ class Frenet_Shipping_Helper_Objects
     private $defaultClassGroup = 'frenet_shipping';
 
     /**
+     * @return Frenet_Shipping_Helper_Data
+     */
+    public function helper()
+    {
+        return Mage::helper('frenet_shipping');
+    }
+
+    /**
      * @return Mage_Core_Model_Cache
      */
     public function cache()
@@ -23,6 +31,54 @@ class Frenet_Shipping_Helper_Objects
     public function cacheManager()
     {
         return $this->getInstance('cache_manager');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator
+     */
+    public function cacheKeyGenerator()
+    {
+        return $this->getInstance('cache_key_generator');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Coupon
+     */
+    public function cacheKeyGeneratorCoupon()
+    {
+        return $this->getInstance('cache_key_generator_coupon');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Postcode
+     */
+    public function cacheKeyGeneratorPostcode()
+    {
+        return $this->getInstance('cache_key_generator_postcode');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Multiquote
+     */
+    public function cacheKeyGeneratorMultiQuote()
+    {
+        return $this->getInstance('cache_key_generator_multiquote');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Quote_Item
+     */
+    public function cacheKeyGeneratorQuoteItem()
+    {
+        return $this->getInstance('cache_key_generator_quote_item');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Totals_Collector
+     */
+    public function totalsCollector()
+    {
+        return $this->getInstance('totals_collector');
     }
 
     /**

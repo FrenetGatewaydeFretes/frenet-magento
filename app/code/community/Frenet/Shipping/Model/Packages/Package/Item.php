@@ -1,11 +1,21 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface as AttributesMappingInterface;
 
 /**
  * Class Frenet_Shipping_Model_Packages_Package_Item
- *
- * @package Frenet\Shipping\Model\Packages
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 use Mage_Catalog_Model_Product as Product;
 use Mage_Catalog_Model_Resource_Product as ProductResource;

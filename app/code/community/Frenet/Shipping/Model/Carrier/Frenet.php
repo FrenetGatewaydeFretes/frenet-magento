@@ -1,4 +1,15 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Frenet\ObjectType\Entity\Shipping\Quote\ServiceInterface as QuoteServiceInterface;
 use Mage_Shipping_Model_Rate_Request as RateRequest;
@@ -102,7 +113,10 @@ class Frenet_Shipping_Model_Carrier_Frenet extends Mage_Shipping_Model_Carrier_A
     }
 
     /**
+     * Collect and get rates
+     *
      * @param Mage_Shipping_Model_Rate_Request $request
+     *
      * @return bool|Mage_Shipping_Model_Rate_Result|null
      * @throws Mage_Core_Model_Store_Exception
      */

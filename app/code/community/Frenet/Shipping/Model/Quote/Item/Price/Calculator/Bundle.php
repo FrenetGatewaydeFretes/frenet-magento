@@ -15,8 +15,9 @@ use Mage_Bundle_Model_Product_Price as Price;
 use Mage_Sales_Model_Quote_Item as QuoteItem;
 
 /**
- * Class DefaultPriceCalculator
- *  */
+ * Class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle implements PriceCalculatorInterface
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
@@ -24,11 +25,11 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle implements PriceC
     /**
      * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
      */
-    private $itemQuantityCalculator;
+    private $itemQtyCalculator;
 
     public function __construct()
     {
-        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->itemQtyCalculator = $this->objects()->quoteItemQtyCalculator();
     }
 
     /**
@@ -52,7 +53,7 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle implements PriceC
             return $this->calculatePartialValue($item);
         }
 
-        return $item->getRowTotal() / $this->itemQuantityCalculator->calculate($item);
+        return $item->getRowTotal() / $this->itemQtyCalculator->calculate($item);
     }
 
     /**
@@ -66,7 +67,12 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Bundle implements PriceC
     {
         /** @var QuoteItem $bundle */
         $bundle = $item->getParentItem();
-        $rowTotal = (float) $bundle->getRowTotal() / $this->itemQuantityCalculator->calculate($item);
+
+        if (!$bundle->getRowTotal()) {
+            $bundle->calcRowTotal();
+        }
+
+        $rowTotal = (float) $bundle->getRowTotal() / $this->itemQtyCalculator->calculate($item);
 
         return (float) ($rowTotal / count($bundle->getChildren()));
     }

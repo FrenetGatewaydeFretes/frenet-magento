@@ -1,4 +1,15 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 /**
  * Class Frenet_Shipping_Model_Service_Finder
@@ -34,7 +45,8 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
 
         /** @var string $name */
         foreach ($names as $name) {
-            if ($service = $this->machServiceByName($services, $name)) {
+            $service = $this->machServiceByName($services, $name);
+            if ($service) {
                 return $service;
             }
         }
@@ -45,6 +57,7 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
     /**
      * @param \Frenet\ObjectType\Entity\Shipping\Info\ServiceInterface[] $services
      * @param string                                                     $name
+     *
      * @return bool|\Frenet\ObjectType\Entity\Shipping\Info\ServiceInterface
      */
     private function machServiceByName(array $services, $name)
@@ -61,6 +74,7 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
 
     /**
      * @param string $trackingNumber
+     *
      * @return array|null
      */
     private function getShipmentPossibleNames($trackingNumber)
@@ -83,13 +97,14 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
 
     /**
      * @param string $trackingNumber
+     *
      * @return Mage_Sales_Model_Order_Shipment_Track
      */
     private function getShipmentTrack($trackingNumber)
     {
         /** @var Mage_Sales_Model_Resource_Order_Shipment_Track_Collection $collection */
         $collection = Mage::getResourceModel('sales/order_shipment_track_collection');
-        $collection->addFieldToFilter('track_number' ,$trackingNumber);
+        $collection->addFieldToFilter('track_number', $trackingNumber);
 
         foreach ($collection as $track) {
             return $track;

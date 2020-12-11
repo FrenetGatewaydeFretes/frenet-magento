@@ -1,9 +1,24 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Mage_Catalog_Model_Product as Product;
 use Mage_Sales_Model_Quote_Item as QuoteItem;
 use Frenet\ObjectType\Entity\Shipping\Quote\ServiceInterface;
 
+/**
+ * Class DeliveryTimeCalculator
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class Frenet_Shipping_Model_Delivery_Time_Calculator
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
@@ -16,7 +31,7 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
     /**
      * @var Frenet_Shipping_Model_Factory_Product_Resource
      */
-    private $productResourceFactory;
+    private $productResource;
 
     /**
      * @var Frenet_Shipping_Model_Store_Management
@@ -33,7 +48,7 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
      */
     public function __construct()
     {
-        $this->productResourceFactory = $this->objects()->productResourceFactory();
+        $this->productResource = $this->objects()->productResourceFactory()->create();
         $this->storeManagement = $this->objects()->storeManagement();
         $this->config = $this->objects()->config();
         $this->rateRequestProvider = $this->objects()->rateRequestProvider();
@@ -74,9 +89,11 @@ class Frenet_Shipping_Model_Delivery_Time_Calculator
         $leadTime = max($product->getData('lead_time'), 0);
 
         if (!$leadTime) {
-            $leadTime = $this->productResourceFactory
-                ->create()
-                ->getAttributeRawValue($product->getId(), 'lead_time', $this->storeManagement->getStore());
+            $leadTime = $this->productResource->getAttributeRawValue(
+                $product->getId(),
+                'lead_time',
+                $this->storeManagement->getStore()
+            );
         }
 
         return (int) $leadTime;

@@ -1,10 +1,21 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 
 /**
  * Class Frenet_Shipping_Model_Packages_Package_Matching
- *
+ * @SuppressWarnings(PHPMD.LongVariable)
  * @todo Review this class.
  */
 class Frenet_Shipping_Model_Packages_Package_Matching
@@ -57,8 +68,8 @@ class Frenet_Shipping_Model_Packages_Package_Matching
      */
     private function matchResults()
     {
-        /** @var array $result */
-        foreach ($this->results as $resultIndex => $services) {
+        /** @var array $services */
+        foreach ($this->results as $services) {
             $this->prepareServices($services);
         }
 
@@ -73,8 +84,8 @@ class Frenet_Shipping_Model_Packages_Package_Matching
     private function prepareServices(array $services)
     {
         /** @var Service $service */
-        foreach ($services as $serviceIndex => $service) {
-            if ($service->getCarrier() != 'Correios') {
+        foreach ($services as $service) {
+            if ($service->getCarrier() !== 'Correios') {
                 continue;
             }
 

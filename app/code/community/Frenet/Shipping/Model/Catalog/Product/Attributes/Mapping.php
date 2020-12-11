@@ -1,15 +1,14 @@
 <?php
-
 /**
  * Frenet Shipping Gateway
  *
  * @category Frenet
- * @package  Frenet_Shipping
+ *
  * @author   Tiago Sampaio <tiago@tiagosampaio.com>
  * @link     https://github.com/tiagosampaio
  * @link     https://tiagosampaio.com
  *
- * Copyright (c) 2019.
+ * Copyright (c) 2020.
  */
 
 class Frenet_Shipping_Model_Catalog_Product_Attributes_Mapping

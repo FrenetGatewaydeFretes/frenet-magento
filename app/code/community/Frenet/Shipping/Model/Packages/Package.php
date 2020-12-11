@@ -1,8 +1,22 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Mage_Sales_Model_Quote_Item as QuoteItem;
 use Frenet_Shipping_Model_Packages_Package_Item as PackageItem;
 
+/**
+ * Class Frenet_Shipping_Model_Packages_Package
+ */
 class Frenet_Shipping_Model_Packages_Package
 {
     use Frenet_Shipping_Helper_ObjectsTrait;

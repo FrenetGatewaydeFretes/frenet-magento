@@ -21,18 +21,12 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator
     use Frenet_Shipping_Helper_ObjectsTrait;
 
     /**
-     * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
-     */
-    private $itemQuantityCalculator;
-
-    /**
      * @var PriceCalculatorFactory
      */
     private $priceCalculatorFactory;
 
     public function __construct()
     {
-        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
         $this->priceCalculatorFactory = $this->objects()->quoteItemPriceCalculatorFactory();
     }
 

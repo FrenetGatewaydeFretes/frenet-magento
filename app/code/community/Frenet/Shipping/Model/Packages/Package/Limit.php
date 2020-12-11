@@ -1,4 +1,15 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 /**
  * Class Frenet_Shipping_Model_Packages_Package_Limit
@@ -28,7 +39,6 @@ class Frenet_Shipping_Model_Packages_Package_Limit
         if (null === $this->maxWeight) {
             return self::PACKAGE_MAX_WEIGHT;
         }
-
         return (float) $this->maxWeight;
     }
 

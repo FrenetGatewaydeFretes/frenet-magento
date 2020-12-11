@@ -23,11 +23,11 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Default implements Price
     /**
      * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
      */
-    private $itemQuantityCalculator;
+    private $itemQtyCalculator;
 
     public function __construct()
     {
-        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->itemQtyCalculator = $this->objects()->quoteItemQtyCalculator();
     }
 
     /**
@@ -43,6 +43,18 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Default implements Price
      */
     public function getFinalPrice(QuoteItem $item)
     {
-        return $item->getRowTotal() / $this->itemQuantityCalculator->calculate($item);
+        if (!$item->getRowTotal()) {
+            $item->calcRowTotal();
+        }
+
+        /**
+         * If the item price is still not calculated then fallback to product final price.
+         */
+        if (!$item->getRowTotal()) {
+            $basePrice = $item->getProduct()->getFinalPrice($item->getQty());
+            $item->setRowTotal($basePrice * $item->getQty());
+        }
+
+        return $item->getRowTotal() / $this->itemQtyCalculator->calculate($item);
     }
 }

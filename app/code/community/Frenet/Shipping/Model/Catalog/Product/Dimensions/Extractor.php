@@ -3,18 +3,20 @@
  * Frenet Shipping Gateway
  *
  * @category Frenet
- * @package  Frenet_Shipping
+ *
  * @author   Tiago Sampaio <tiago@tiagosampaio.com>
  * @link     https://github.com/tiagosampaio
  * @link     https://tiagosampaio.com
  *
- * Copyright (c) 2019.
+ * Copyright (c) 2020.
  */
 
 use Frenet_Shipping_Model_Catalog_Product_Dimensions_ExtractorInterface as ProductExtractorInterface;
 use Mage_Catalog_Model_Product as Product;
 use Mage_Catalog_Model_Resource_Product as ProductResource;
 use Mage_Sales_Model_Quote_Item as QuoteItem;
+use Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface as AttributesMappingInterface;
+use Frenet_Shipping_Model_Config as Config;
 
 /**
  * Class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor
@@ -39,12 +41,12 @@ class Frenet_Shipping_Model_Catalog_Product_Dimensions_Extractor implements Prod
     private $productResource;
 
     /**
-     * @var Frenet_Shipping_Model_Catalog_Product_Attributes_MappingInterface
+     * @var AttributesMappingInterface
      */
     private $attributesMapping;
 
     /**
-     * @var Frenet_Shipping_Model_Config
+     * @var Config
      */
     private $config;
 

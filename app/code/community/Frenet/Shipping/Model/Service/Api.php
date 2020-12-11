@@ -3,18 +3,20 @@
  * Frenet Shipping Gateway
  *
  * @category Frenet
- * @package  Frenet_Shipping
+ *
  * @author   Tiago Sampaio <tiago@tiagosampaio.com>
  * @link     https://github.com/tiagosampaio
  * @link     https://tiagosampaio.com
  *
- * Copyright (c) 2019.
+ * Copyright (c) 2020.
  */
 
 Frenet_Shipping_Model_DependencyFinder::includeDependency();
 
 /**
  * Class Frenet_Shipping_Model_Service_Api
+ *
+ * Used for communication with the API Service.
  */
 class Frenet_Shipping_Model_Service_Api
 {
@@ -72,6 +74,7 @@ class Frenet_Shipping_Model_Service_Api
      *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function init()
     {

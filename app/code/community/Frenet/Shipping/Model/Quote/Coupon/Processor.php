@@ -25,9 +25,15 @@ class Frenet_Shipping_Model_Quote_Coupon_Processor
      */
     private $checkoutSession;
 
+    /**
+     * @var RateRequestProvider
+     */
+    private $requestProvider;
+
     public function __construct()
     {
         $this->checkoutSession = Mage::getSingleton('checkout/session');
+        $this->requestProvider = $this->objects()->rateRequestProvider();
     }
 
     /**
@@ -59,9 +65,29 @@ class Frenet_Shipping_Model_Quote_Coupon_Processor
     private function getQuoteCouponCode()
     {
         try {
-            return $this->checkoutSession->getQuote()->getCouponCode();
+            return $this->getQuote()->getCouponCode();
         } catch (\Exception $exception) {
             return null;
         }
+    }
+
+    /**
+     * @return Mage_Sales_Model_Quote
+     */
+    private function getQuote()
+    {
+        /**
+         * For some reason the quote from checkout session was creating a new quote.
+         * When this occurs the message "Request Rate is not set" is displayed when placing order.
+         * This is a workaround to solve the problem.
+         */
+        $allItems = $this->requestProvider->getRateRequest()->getAllItems();
+        /** @var Mage_Sales_Model_Quote_Item_Abstract $item */
+        foreach ($allItems as $item) {
+            if ($item->getQuote()) {
+                return $item->getQuote();
+            }
+        }
+        return $this->checkoutSession->getQuote();
     }
 }

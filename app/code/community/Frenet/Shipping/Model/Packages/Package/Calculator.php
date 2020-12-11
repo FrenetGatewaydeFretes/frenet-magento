@@ -75,6 +75,7 @@ class Frenet_Shipping_Model_Packages_Package_Calculator
     {
         /** @var RateRequest $rateRequest */
         $rateRequest = $this->rateRequestProvider->getRateRequest();
+        $this->packageManager->resetPackages();
 
         /**
          * If the package is not overweight then we simply process all the package.

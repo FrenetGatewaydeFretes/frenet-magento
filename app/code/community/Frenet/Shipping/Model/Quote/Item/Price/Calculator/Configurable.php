@@ -15,6 +15,7 @@ use Frenet_Shipping_Model_Quote_Item_Price_CalculatorInterface as PriceCalculato
 
 /**
  * Class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Default
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Configurable implements PriceCalculatorInterface
 {
@@ -23,11 +24,11 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Configurable implements 
     /**
      * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
      */
-    private $itemQuantityCalculator;
+    private $itemQtyCalculator;
 
     public function __construct()
     {
-        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
+        $this->itemQtyCalculator = $this->objects()->quoteItemQtyCalculator();
     }
 
     /**
@@ -45,6 +46,11 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Configurable implements 
     public function getFinalPrice(QuoteItem $item)
     {
         $parentItem = $item->getParentItem();
-        return $parentItem->getRowTotal() / $this->itemQuantityCalculator->calculate($item);
+
+        if (!$parentItem->getRowTotal()) {
+            $parentItem->calcRowTotal();
+        }
+
+        return $parentItem->getRowTotal() / $this->itemQtyCalculator->calculate($item);
     }
 }

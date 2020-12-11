@@ -1,9 +1,23 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
-use Mage_Shipping_Model_Rate_Request as RateRequest;
 use Frenet_Shipping_Model_Packages_Package as Package;
 use Mage_Sales_Model_Quote_Item as QuoteItem;
 
+/**
+ * Class Frenet_Shipping_Model_Packages_Package_Manager
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class Frenet_Shipping_Model_Packages_Package_Manager
 {
     use Frenet_Shipping_Helper_ObjectsTrait;
@@ -92,6 +106,16 @@ class Frenet_Shipping_Model_Packages_Package_Manager
     public function unsetCurrentPackage()
     {
         $this->currentPackage = null;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetPackages()
+    {
+        $this->packages = [];
+        $this->unsetCurrentPackage();
         return $this;
     }
 

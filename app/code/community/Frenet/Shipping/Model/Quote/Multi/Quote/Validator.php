@@ -1,4 +1,15 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Mage_Shipping_Model_Rate_Request as RateRequest;
 
@@ -59,7 +70,6 @@ class Frenet_Shipping_Model_Quote_Multi_Quote_Validator
                 return false;
             }
         }
-
         return true;
     }
 }

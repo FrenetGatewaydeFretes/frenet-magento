@@ -1,7 +1,21 @@
 <?php
+/**
+ * Frenet Shipping Gateway
+ *
+ * @category Frenet
+ *
+ * @author   Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link     https://github.com/tiagosampaio
+ * @link     https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
+ */
 
 use Frenet\ObjectType\Entity\Shipping\Quote\Service;
 
+/**
+ * Class Frenet_Shipping_Model_Calculator
+ */
 class Frenet_Shipping_Model_Calculator implements Frenet_Shipping_Model_CalculatorInterface
 {
     use Frenet_Shipping_Helper_ObjectsTrait;

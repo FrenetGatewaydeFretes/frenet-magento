@@ -10,6 +10,7 @@
  *
  * Copyright (c) 2020.
  */
+
 Frenet_Shipping_Model_DependencyFinder::includeDependency();
 
 use Mage_Catalog_Model_Product as Product;
@@ -133,12 +134,12 @@ class Frenet_Shipping_Model_Catalog_Product_View_Quote implements QuoteInterface
     private function prepareService(ServiceInterface $service)
     {
         return [
-            'service_code'        => $service->getServiceCode(),
-            'carrier'             => $service->getCarrier(),
-            'message'             => $service->getMessage(),
-            'delivery_time'       => $service->getDeliveryTime(),
+            'service_code' => $service->getServiceCode(),
+            'carrier' => $service->getCarrier(),
+            'message' => $service->getMessage(),
+            'delivery_time' => $service->getDeliveryTime(),
             'service_description' => $service->getServiceDescription(),
-            'shipping_price'      => $service->getShippingPrice(),
+            'shipping_price' => $service->getShippingPrice(),
         ];
     }
 }

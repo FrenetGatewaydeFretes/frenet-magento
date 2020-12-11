@@ -19,20 +19,12 @@ use Frenet_Shipping_Model_Catalog_ProductType as ProductType;
  */
 class Frenet_Shipping_Model_Config_Source_Product_Quote_Product_Types
 {
+    use Frenet_Shipping_Helper_ObjectsTrait;
+
     /**
      * @var array
      */
     private $options = [];
-
-    /**
-     * @var Frenet_Shipping_Helper_Data
-     */
-    private $helper;
-
-    public function __construct()
-    {
-        $this->helper = Mage::helper('frenet_shipping');
-    }
 
     /**
      * Return array of options as value-label pairs
@@ -61,10 +53,10 @@ class Frenet_Shipping_Model_Config_Source_Product_Quote_Product_Types
     public function toArray()
     {
         $this->options = [
-            ProductType::TYPE_SIMPLE       => $this->helper->__('Simple Products'),
-            ProductType::TYPE_CONFIGURABLE => $this->helper->__('Configurable Products'),
-            ProductType::TYPE_BUNDLE       => $this->helper->__('Bundle Products'),
-            ProductType::TYPE_GROUPED      => $this->helper->__('Grouped Products'),
+            ProductType::TYPE_SIMPLE       => $this->objects()->helper()->__('Simple Products'),
+            ProductType::TYPE_CONFIGURABLE => $this->objects()->helper()->__('Configurable Products'),
+            ProductType::TYPE_BUNDLE       => $this->objects()->helper()->__('Bundle Products'),
+            ProductType::TYPE_GROUPED      => $this->objects()->helper()->__('Grouped Products'),
         ];
 
         return $this->options;

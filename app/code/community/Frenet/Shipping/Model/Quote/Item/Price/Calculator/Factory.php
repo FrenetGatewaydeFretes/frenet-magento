@@ -4,9 +4,9 @@
  *
  * @category Frenet
  *
- * @author   Tiago Sampaio <tiago@tiagosampaio.com>
- * @link     https://github.com/tiagosampaio
- * @link     https://tiagosampaio.com
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
  *
  * Copyright (c) 2020.
  */
@@ -64,11 +64,9 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Factory
     private function getCalculatorInstance(QuoteItem $item)
     {
         $type = $this->getCalculatorType($item);
-
         if (isset($this->calculators[$type])) {
             return $this->calculators[$type];
         }
-
         return $this->calculators[$this->getDefaultCalculatorType()];
     }
 
@@ -80,11 +78,9 @@ class Frenet_Shipping_Model_Quote_Item_Price_Calculator_Factory
     private function getCalculatorType(QuoteItem $item)
     {
         $type = $item->getProductType();
-
         if ($item->getParentItemId() && $item->getParentItem()) {
             $type = $item->getParentItem()->getProductType();
         }
-
         return $type;
     }
 

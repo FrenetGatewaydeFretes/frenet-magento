@@ -53,6 +53,11 @@ class Frenet_Shipping_Model_Packages_Package_Processor
      */
     private $rateRequestProvider;
 
+    /**
+     * @var Frenet_Shipping_Model_Totals_Collector
+     */
+    private $totalsCollector;
+
     public function __construct()
     {
         $this->apiService = $this->objects()->apiService();
@@ -60,6 +65,7 @@ class Frenet_Shipping_Model_Packages_Package_Processor
         $this->config = $this->objects()->config();
         $this->rateRequestProvider = $this->objects()->rateRequestProvider();
         $this->quoteCouponProcessor = $this->objects()->quoteCouponProcessor();
+        $this->totalsCollector = $this->objects()->totalsCollector();
     }
 
     /**
@@ -70,7 +76,7 @@ class Frenet_Shipping_Model_Packages_Package_Processor
     public function process(Package $package)
     {
         $this->initServiceQuote();
-        $this->serviceQuote->setShipmentInvoiceValue($package->getTotalPrice());
+        $this->calculateShipmentInvoiceValue($package);
 
         /** @var PackageItem $packageItem */
         foreach ($package->getItems() as $packageItem) {
@@ -82,6 +88,20 @@ class Frenet_Shipping_Model_Packages_Package_Processor
         }
 
         return $this->callService();
+    }
+
+    /**
+     * @param Package $package
+     *
+     * @return $this
+     */
+    private function calculateShipmentInvoiceValue(Package $package)
+    {
+        $totalPrice = $package->getTotalPrice();
+        $totalPrice += $this->totalsCollector->calculateQuoteAdditions();
+        $totalPrice -= $this->totalsCollector->calculateQuoteDiscounts();
+        $this->serviceQuote->setShipmentInvoiceValue($totalPrice);
+        return $this;
     }
 
     /**

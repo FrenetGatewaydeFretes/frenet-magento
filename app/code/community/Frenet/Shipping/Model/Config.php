@@ -176,7 +176,7 @@ class Frenet_Shipping_Model_Config
     }
 
     /**
-     * @param string $productTypeId
+     * @param string                                $productTypeId
      * @param null|string|int|Mage_Core_Model_Store $store
      *
      * @return bool
@@ -231,7 +231,7 @@ class Frenet_Shipping_Model_Config
      */
     public function get($section, $group, $field, $store = null)
     {
-        $path = implode('/', array($section, $group, $field));
+        $path = implode('/', [$section, $group, $field]);
         return Mage::getStoreConfig($path, $this->getStore($store));
     }
 

@@ -3,13 +3,16 @@
  * Frenet Shipping Gateway
  *
  * @category Frenet
- * @package  Frenet\Shipping
- * @author   Tiago Sampaio <tiago@tiagosampaio.com>
- * @link     https://github.com/tiagosampaio
- * @link     https://tiagosampaio.com
  *
- * Copyright (c) 2019.
+ * @author Tiago Sampaio <tiago@tiagosampaio.com>
+ * @link https://github.com/tiagosampaio
+ * @link https://tiagosampaio.com
+ *
+ * Copyright (c) 2020.
  */
+
+use Mage_Sales_Model_Quote_Item as AbstractItem;
+use Mage_Catalog_Model_Product as Product;
 
 /**
  * Class Frenet_Shipping_Model_Quote_Item_Validator
@@ -21,7 +24,7 @@ class Frenet_Shipping_Model_Quote_Item_Validator
      *
      * @return bool
      */
-    public function validate(Mage_Sales_Model_Quote_Item $item)
+    public function validate(AbstractItem $item)
     {
         if ($this->getProduct($item)->isComposite()) {
             return false;
@@ -35,13 +38,13 @@ class Frenet_Shipping_Model_Quote_Item_Validator
     }
 
     /**
-     * @param Mage_Sales_Model_Quote_Item $item
+     * @param AbstractItem $item
      *
-     * @return bool|Mage_Catalog_Model_Product
+     * @return bool|Product
      */
-    private function getProduct(Mage_Sales_Model_Quote_Item $item)
+    private function getProduct(AbstractItem $item)
     {
-        /** @var Mage_Catalog_Model_Product $product */
+        /** @var Product $product */
         $product = $item->getProduct();
         return $product;
     }
