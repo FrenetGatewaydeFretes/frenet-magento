@@ -20,6 +20,7 @@ use Frenet_Shipping_Model_Catalog_Product_View_Rate_Request_Builder as RateReque
 use Frenet_Shipping_Model_Calculator as Calculator;
 use Frenet_Shipping_Model_Catalog_Product_View_QuoteInterface as QuoteInterface;
 use Frenet_Shipping_Model_Delivery_Time_Calculator as DeliveryTimeCalculator;
+use Frenet_Shipping_Model_Config as Config;
 use Frenet\ObjectType\Entity\Shipping\Quote\ServiceInterface;
 
 /**
@@ -49,12 +50,18 @@ class Frenet_Shipping_Model_Catalog_Product_View_Quote implements QuoteInterface
      */
     private $deliveryTimeCalculator;
 
+    /**
+     * @var Config
+     */
+    private $config;
+
     public function __construct()
     {
         $this->rateRequestProvider = $this->objects()->rateRequestProvider();
         $this->calculator = $this->objects()->calculator();
         $this->rateRequestBuilder = $this->objects()->productViewQuoteRateRequestBuilder();
         $this->deliveryTimeCalculator = $this->objects()->deliveryTimeCalculator();
+        $this->config = $this->objects()->config();
     }
 
     /**
@@ -141,12 +148,14 @@ class Frenet_Shipping_Model_Catalog_Product_View_Quote implements QuoteInterface
     private function prepareService(ServiceInterface $service)
     {
         $deliveryTime = $this->deliveryTimeCalculator->calculate($service);
+        $forecast = str_replace('{{d}}', $deliveryTime, $this->config->getShippingForecastMessage());
 
         return [
             'service_code' => $service->getServiceCode(),
             'carrier' => $service->getCarrier(),
             'message' => $service->getMessage(),
             'delivery_time' => $deliveryTime,
+            'delivery_description' => $forecast,
             'service_description' => $service->getServiceDescription(),
             'shipping_price' => $service->getShippingPrice(),
         ];

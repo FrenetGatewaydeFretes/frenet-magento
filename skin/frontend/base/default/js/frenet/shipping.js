@@ -102,7 +102,7 @@ ProductQuote.prototype = {
     appendRate: function (rate, index) {
         var row = new Element('tr');
         this.createColumn(row, rate.service_description);
-        this.createColumn(row, this.formatDeliveryTime(rate.delivery_time));
+        this.createColumn(row, rate.delivery_description);
         this.createColumn(row, this.formatPrice(rate.shipping_price));
         this.tableBody.appendChild(row);
     },
