@@ -11,9 +11,6 @@
  * Copyright (c) 2019.
  */
 
-use Mage_Shipping_Model_Rate_Request as RateRequest;
-use Mage_Sales_Model_Quote_Item as QuoteItem;
-
 /**
  * Class CacheManager
  *
@@ -44,45 +41,15 @@ class Frenet_Shipping_Model_Cache_Manager
     private $serializer;
 
     /**
-     * @var Frenet_Shipping_Model_Config
+     * @var Frenet_Shipping_Model_Cache_Key_Generator
      */
-    private $config;
-
-    /**
-     * @var Frenet_Shipping_Model_Quote_Item_Validator
-     */
-    private $quoteItemValidator;
-
-    /**
-     * @var Frenet_Shipping_Model_Quote_Item_Quantity_CalculatorInterface
-     */
-    private $itemQuantityCalculator;
-
-    /**
-     * @var Frenet_Shipping_Model_Formatters_Postcode_Normalizer
-     */
-    private $postcodeNormalizer;
-
-    /**
-     * @var Frenet_Shipping_Model_Quote_Coupon_Processor
-     */
-    private $couponProcessor;
-
-    /**
-     * @var Frenet_Shipping_Model_Rate_Request_Provider
-     */
-    private $rateRequestProvider;
+    private $cacheKeyGenerator;
 
     public function __construct()
     {
         $this->serializer = $this->objects()->serializer();
         $this->cache = Mage::app()->getCacheInstance();
-        $this->config = $this->objects()->config();
-        $this->quoteItemValidator = $this->objects()->quoteItemValidator();
-        $this->itemQuantityCalculator = $this->objects()->quoteItemQtyCalculator();
-        $this->couponProcessor = $this->objects()->quoteCouponProcessor();
-        $this->postcodeNormalizer = $this->objects()->postcodeNormalizer();
-        $this->rateRequestProvider = $this->objects()->rateRequestProvider();
+        $this->cacheKeyGenerator = $this->objects()->cacheKeyGenerator();
     }
 
     /**
@@ -94,7 +61,7 @@ class Frenet_Shipping_Model_Cache_Manager
             return false;
         }
 
-        $data = $this->cache->load($this->generateCacheKey());
+        $data = $this->cache->load($this->cacheKeyGenerator->generate());
 
         if ($data) {
             $data = $this->prepareAfterLoading($data);
@@ -114,7 +81,7 @@ class Frenet_Shipping_Model_Cache_Manager
             return false;
         }
 
-        $identifier = $this->generateCacheKey();
+        $identifier = $this->cacheKeyGenerator->generate();
         $lifetime = null;
         $tags = [self::CACHE_TAG];
 
@@ -159,47 +126,6 @@ class Frenet_Shipping_Model_Cache_Manager
         }
 
         return $this->serializer->serialize($newData);
-    }
-
-    /**
-     * @return string
-     */
-    private function generateCacheKey()
-    {
-        $request = $this->rateRequestProvider->getRateRequest();
-
-        $destPostcode = $request->getDestPostcode();
-        $origPostcode = $this->config->getOriginPostcode();
-        $items = [];
-
-        /** @var QuoteItem $item */
-        foreach ($request->getAllItems() as $item) {
-            if (!$this->quoteItemValidator->validate($item)) {
-                continue;
-            }
-
-            $productId = (int) $item->getProductId();
-
-            if ($item->getParentItem()) {
-                $productId = $item->getParentItem()->getProductId() . '-' . $productId;
-            }
-
-            $qty = (float) $this->itemQuantityCalculator->calculate($item);
-
-            $items[$productId] = $qty;
-        }
-
-        ksort($items);
-
-        $cacheKey = $this->serializer->serialize([
-            $this->postcodeNormalizer->format($origPostcode),
-            $this->postcodeNormalizer->format($destPostcode),
-            $items,
-            $this->couponProcessor->getCouponCode(),
-            $this->config->isMultiQuoteEnabled() ? 'multi' : null
-        ]);
-
-        return $cacheKey;
     }
 
     /**

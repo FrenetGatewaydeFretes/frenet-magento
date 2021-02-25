@@ -34,7 +34,8 @@ class Frenet_Shipping_Model_Service_Finder implements Frenet_Shipping_Model_Serv
 
         /** @var string $name */
         foreach ($names as $name) {
-            if ($service = $this->machServiceByName($services, $name)) {
+            $service = $this->machServiceByName($services, $name);
+            if ($service) {
                 return $service;
             }
         }

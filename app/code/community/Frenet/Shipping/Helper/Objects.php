@@ -26,6 +26,46 @@ class Frenet_Shipping_Helper_Objects
     }
 
     /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator
+     */
+    public function cacheKeyGenerator()
+    {
+        return $this->getInstance('cache_key_generator');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Coupon
+     */
+    public function cacheKeyGeneratorCoupon()
+    {
+        return $this->getInstance('cache_key_generator_coupon');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Postcode
+     */
+    public function cacheKeyGeneratorPostcode()
+    {
+        return $this->getInstance('cache_key_generator_postcode');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Multiquote
+     */
+    public function cacheKeyGeneratorMultiQuote()
+    {
+        return $this->getInstance('cache_key_generator_multiquote');
+    }
+
+    /**
+     * @return Frenet_Shipping_Model_Cache_Key_Generator_Quote_Item
+     */
+    public function cacheKeyGeneratorQuoteItem()
+    {
+        return $this->getInstance('cache_key_generator_quote_item');
+    }
+
+    /**
      * @return Frenet_Shipping_Model_SerializerInterface
      */
     public function serializer()
