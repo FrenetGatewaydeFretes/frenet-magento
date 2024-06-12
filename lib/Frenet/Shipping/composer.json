@@ -15,7 +15,7 @@
     "repositories": {
         "frenet/frenet-php": {
             "type": "path",
-            "url": "/Users/tiagosampaio/web/opensource/frenet/frenet-php"
+            "url": "vendor/frenet/frenet-php"
         }
     }
 }
