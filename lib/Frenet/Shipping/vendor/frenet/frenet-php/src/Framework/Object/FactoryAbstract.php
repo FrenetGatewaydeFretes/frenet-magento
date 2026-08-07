@@ -35,7 +35,6 @@ abstract class FactoryAbstract implements FactoryInterface
     public function create(array $parameters = [])
     {
         try {
-            /** @var \GuzzleHttp\ClientInterface $instance */
             $instance = $this->objectManager->create($this->objectClass, $parameters);
         } catch (\Exception $e) {
             /** @todo debug error or throw exception. */

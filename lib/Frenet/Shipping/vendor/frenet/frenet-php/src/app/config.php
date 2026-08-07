@@ -43,7 +43,6 @@ return [
     Framework\Data\DataObjectInterface::class => \DI\object(Framework\Data\DataObject::class),
 
     /** Other Objects */
-    \GuzzleHttp\ClientInterface::class => \DI\object(\GuzzleHttp\Client::class),
     \Psr\Log\LoggerInterface::class => \DI\object(\Monolog\Logger::class),
     EventObserver\EventDispatcherInterface::class => \DI\object(EventObserver\EventDispatcher::class),
 ];

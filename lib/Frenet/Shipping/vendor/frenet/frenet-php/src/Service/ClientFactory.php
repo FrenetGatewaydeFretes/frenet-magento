@@ -13,5 +13,5 @@ class ClientFactory extends FactoryAbstract
     /**
      * @var string
      */
-    protected $objectClass = \GuzzleHttp\ClientInterface::class;
+    protected $objectClass = \Frenet\Service\Http\CurlClient::class;
 }
