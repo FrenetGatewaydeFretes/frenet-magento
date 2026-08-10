@@ -25,9 +25,10 @@ class CurlClient
     public function request($method, $uri, array $options = [])
     {
         $curlHeaders = [];
+        $method = strtoupper($method);
 
         $body = null;
-        if (isset($options['json'])) {
+        if (isset($options['json']) && $method !== 'GET') {
             $body = json_encode($options['json']);
             $curlHeaders[] = 'Content-Type: application/json';
         }
@@ -38,7 +39,6 @@ class CurlClient
             }
         }
 
-        $method = strtoupper($method);
         $handle = curl_init();
 
         curl_setopt_array($handle, [
@@ -54,7 +54,7 @@ class CurlClient
             CURLOPT_TIMEOUT => 30,
         ]);
 
-        if ($body !== null && $method !== 'GET') {
+        if ($body !== null) {
             curl_setopt($handle, CURLOPT_POSTFIELDS, $body);
         }
 
@@ -78,7 +78,12 @@ class CurlClient
         $rawHeaders = substr($raw, 0, $headerSize);
         $responseBody = substr($raw, $headerSize);
 
-        $response = new Response($statusCode, $this->parseHeaders($rawHeaders), $responseBody);
+        $response = new Response(
+            $statusCode,
+            $this->parseHeaders($rawHeaders),
+            $responseBody,
+            $this->parseReasonPhrase($rawHeaders)
+        );
 
         // Redirects (3xx) are treated as failures rather than followed: this client never
         // sets CURLOPT_FOLLOWLOCATION, so a 3xx here means the body is a redirect page, not
@@ -91,6 +96,23 @@ class CurlClient
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $rawHeaders
+     *
+     * @return string
+     */
+    private function parseReasonPhrase($rawHeaders)
+    {
+        $lines = explode("\r\n", trim($rawHeaders));
+        $statusLine = reset($lines);
+
+        if (preg_match('/^HTTP\/\S+\s+\d{3}\s*(.*)$/', trim($statusLine), $matches)) {
+            return trim($matches[1]);
+        }
+
+        return '';
     }
 
     /**
