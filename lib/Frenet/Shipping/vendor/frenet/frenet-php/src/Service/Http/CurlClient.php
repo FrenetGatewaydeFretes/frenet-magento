@@ -80,7 +80,10 @@ class CurlClient
 
         $response = new Response($statusCode, $this->parseHeaders($rawHeaders), $responseBody);
 
-        if ($statusCode >= 400) {
+        // Redirects (3xx) are treated as failures rather than followed: this client never
+        // sets CURLOPT_FOLLOWLOCATION, so a 3xx here means the body is a redirect page, not
+        // the expected JSON payload, and must not be handed to callers as a "success".
+        if ($statusCode < 200 || $statusCode >= 300) {
             throw new \RuntimeException(
                 sprintf('HTTP request to "%s" returned status code %d: %s', $uri, $statusCode, $responseBody),
                 $statusCode
