@@ -9,7 +9,7 @@ Integre seu Magento aos serviços da Frenet de forma rápida e fácil.
 Os principais diretórios deste módulo são:
 
 - /app: neste diretório encontra-se o módulo e todos os outros arquivos do mesmo;
-- /lib: neste diretório encontra-se 
+- /lib: neste diretório encontra-se a biblioteca `Frenet\Shipping`, com o SDK (`frenet-php`) usado pelo módulo para se comunicar com a API da Frenet;
 
 Você precisará fazer o seguinte:
 
@@ -23,6 +23,11 @@ Este módulo é compatível com as seguintes versões do Magento:
 - 1.7.x
 - 1.8.x
 - 1.9.x
+
+### Requisitos de PHP
+
+- PHP >= 5.4
+- Extensão `curl` habilitada (o módulo se comunica com a API da Frenet via cURL diretamente, sem depender de nenhuma biblioteca HTTP externa)
 
 ## Ativação do Módulo
 
