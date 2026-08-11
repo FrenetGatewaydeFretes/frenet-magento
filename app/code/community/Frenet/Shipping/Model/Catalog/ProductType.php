@@ -52,18 +52,6 @@ class Frenet_Shipping_Model_Catalog_ProductType
     const TYPE_DOWNLOADABLE = Downloadable::TYPE_DOWNLOADABLE;
 
     /**
-     * @var array
-     */
-    const PRODUCT_TYPES = [
-        self::TYPE_SIMPLE,
-        self::TYPE_VIRTUAL,
-        self::TYPE_CONFIGURABLE,
-        self::TYPE_BUNDLE,
-        self::TYPE_GROUPED,
-        self::TYPE_DOWNLOADABLE,
-    ];
-
-    /**
      * @param ProductInterface $product
      *
      * @return bool
