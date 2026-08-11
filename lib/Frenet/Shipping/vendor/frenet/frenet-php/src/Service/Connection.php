@@ -142,8 +142,6 @@ class Connection implements ConnectionInterface
         try {
             /** @var ResponseInterface $response */
             $response = $this->client()->request($method, $uri, $options);
-        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
-            return $this->respondException($e);
         } catch (\Exception $e) {
             return $this->respondException($e);
         }
@@ -201,7 +199,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @return \GuzzleHttp\ClientInterface
+     * @return \Frenet\Service\Http\CurlClient
      */
     private function client()
     {

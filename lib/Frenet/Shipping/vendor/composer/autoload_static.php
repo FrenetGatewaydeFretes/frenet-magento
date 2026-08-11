@@ -7,10 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit600c23b19f27e8c4bdf0b0d1cb4047d6
 {
     public static $files = array (
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'bbf73f3db644d3dced353b837903e74c' => __DIR__ . '/..' . '/php-di/php-di/src/DI/functions.php',
         'dadcd019dd57185a94ba7e5172f16e3e' => __DIR__ . '/..' . '/frenet/frenet-php/src/app/bootstrap.php',
     );
@@ -32,18 +28,12 @@ class ComposerStaticInit600c23b19f27e8c4bdf0b0d1cb4047d6
         array (
             'Monolog\\' => 8,
         ),
-        'I' => 
+        'I' =>
         array (
             'Invoker\\' => 8,
             'Interop\\Container\\' => 18,
         ),
-        'G' => 
-        array (
-            'GuzzleHttp\\Psr7\\' => 16,
-            'GuzzleHttp\\Promise\\' => 19,
-            'GuzzleHttp\\' => 11,
-        ),
-        'F' => 
+        'F' =>
         array (
             'Frenet\\' => 7,
         ),
@@ -86,23 +76,11 @@ class ComposerStaticInit600c23b19f27e8c4bdf0b0d1cb4047d6
         array (
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
         ),
-        'Interop\\Container\\' => 
+        'Interop\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
-        'GuzzleHttp\\Psr7\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
-        ),
-        'GuzzleHttp\\Promise\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
-        ),
-        'GuzzleHttp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
-        ),
-        'Frenet\\' => 
+        'Frenet\\' =>
         array (
             0 => __DIR__ . '/..' . '/frenet/frenet-php/src',
         ),

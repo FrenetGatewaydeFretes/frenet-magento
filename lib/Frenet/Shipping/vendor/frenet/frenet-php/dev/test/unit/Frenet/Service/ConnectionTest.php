@@ -45,7 +45,7 @@ class ConnectionTest extends TestCase
     protected function setUp()
     {
         $this->clientResponse = $this->createMock(\Psr\Http\Message\ResponseInterface::class);
-        $this->client = $this->createMock(\GuzzleHttp\ClientInterface::class);
+        $this->client = $this->createMock(\Frenet\Service\Http\CurlClient::class);
         
         $this->clientFactory = $this->createMock(\Frenet\Service\ClientFactory::class);
         $this->clientFactory->method('create')->willReturn($this->client);
@@ -83,10 +83,9 @@ class ConnectionTest extends TestCase
     /**
      * @test
      */
-    public function requestGuzzleException()
+    public function requestClientException()
     {
-        $clientRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
-        $exception = new \GuzzleHttp\Exception\ClientException('Test', $clientRequest);
+        $exception = new \RuntimeException('Test');
         $this->client->expects($this->once())->method('request')->willThrowException($exception);
     
         $this->configJson();
@@ -131,10 +130,9 @@ class ConnectionTest extends TestCase
     /**
      * @test
      */
-    public function postGuzzleException()
+    public function postClientException()
     {
-        $clientRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
-        $exception = new \GuzzleHttp\Exception\ClientException('Test', $clientRequest);
+        $exception = new \RuntimeException('Test');
         $this->client->expects($this->once())->method('request')->willThrowException($exception);
     
         $this->configJson();
@@ -179,10 +177,9 @@ class ConnectionTest extends TestCase
     /**
      * @test
      */
-    public function getGuzzleException()
+    public function getClientException()
     {
-        $clientRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
-        $exception = new \GuzzleHttp\Exception\ClientException('Test', $clientRequest);
+        $exception = new \RuntimeException('Test');
         $this->client->expects($this->once())->method('request')->willThrowException($exception);
     
         $this->configJson();
